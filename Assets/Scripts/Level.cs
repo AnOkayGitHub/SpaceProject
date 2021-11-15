@@ -11,7 +11,6 @@ public class Level : MonoBehaviour
     private List<Vector2> totalOpenNeighbors = new List<Vector2>();
     private List<GameObject> rooms;
     private int roomsSpawned = 5;
-    private int level = 1;
     private int itemRooms;
 
     [SerializeField] private int maxRooms = 15;
@@ -33,7 +32,7 @@ public class Level : MonoBehaviour
         rooms = new List<GameObject>();
         World.mainCam = Camera.main.gameObject;
 
-        itemRooms = Mathf.RoundToInt(Random.Range(1, (level / 2) + 1));
+        itemRooms = Mathf.RoundToInt(Random.Range(1, (World.level / 2) + 1));
 
         for(int i = 0; i < 4; i++)
         {

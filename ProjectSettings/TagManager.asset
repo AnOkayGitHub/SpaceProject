@@ -9,6 +9,8 @@ TagManager:
   - Door
   - Occupied Cell
   - Item
+  - Proj
+  - Coin
   layers:
   - Default
   - TransparentFX
@@ -19,8 +21,8 @@ TagManager:
   - Minimap
   - Player
   - Room
-  - 
-  - 
+  - Projectile
+  - Prop
   - 
   - 
   - 

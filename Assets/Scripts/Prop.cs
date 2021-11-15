@@ -6,6 +6,8 @@ public class Prop : MonoBehaviour
 {
     [SerializeField] private Sprite[] sprites;
     [SerializeField] private float destroyChance = 20;
+    [SerializeField] private GameObject coinPrefab;
+    [SerializeField] private int coinAmount;
 
     private SpriteRenderer spriteRenderer;
 
@@ -25,6 +27,17 @@ public class Prop : MonoBehaviour
         if(rand <= destroyChance)
         {
             Destroy(gameObject, 0f);
+        }
+    }
+
+    public void SpawnLoot()
+    {
+        coinAmount += Mathf.RoundToInt(Random.Range(-coinAmount / 2, coinAmount / 2) + 1);
+        for (int i = 0; i < coinAmount; i++)
+        {
+            GameObject coin = (GameObject) Instantiate(coinPrefab);
+            coin.transform.position = transform.position;
+            coin.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-50, 50), Random.Range(-50, 50)));
         }
     }
 }
