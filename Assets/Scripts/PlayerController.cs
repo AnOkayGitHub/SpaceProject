@@ -17,8 +17,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource doorPassSource;
     [SerializeField] private AudioSource itemPickupSource;
     [SerializeField] private float footstepTime;
+    [SerializeField] private float hurtTime;
+    [SerializeField] private Color hurtColor;
 
     private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer;
     private Vector3 movement;
     private GameObject doorTouching;
     private bool isMoving = false;
@@ -26,11 +29,12 @@ public class PlayerController : MonoBehaviour
     private int facingX;
     private int facingY;
     private bool canStep = true;
+    private bool canChangeColor = true;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
+        spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
         if(World.player == null)
         {
             World.player = gameObject;
@@ -53,6 +57,16 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine("WaitForFootsteps");
             }
         }
+
+        if(spriteRenderer.color != Color.white)
+        {
+            spriteRenderer.color = Color.Lerp(spriteRenderer.color, Color.white, hurtTime * Time.deltaTime);
+            if(canChangeColor)
+            {
+                canChangeColor = false;
+                StartCoroutine("WaitForColor");
+            }
+        }
     }
 
     void FixedUpdate()
@@ -66,6 +80,13 @@ public class PlayerController : MonoBehaviour
             rb.velocity = Vector2.zero;
         }
 
+    }
+
+    private IEnumerator WaitForColor()
+    {
+        yield return new WaitForSeconds(hurtTime * 2f);
+        spriteRenderer.color = Color.white;
+        canChangeColor = true;
     }
 
     private IEnumerator WaitForFootsteps()
@@ -176,6 +197,11 @@ public class PlayerController : MonoBehaviour
                 transform.position = (Vector2)doorTouching.transform.position + doorTouching.GetComponent<Door>().offset;
                 doorPassSource.Play();
             }
+        }
+
+        if(Input.GetKeyDown(KeyCode.O))
+        {
+            spriteRenderer.color = hurtColor;
         }
 
         if(Input.GetMouseButton(0) && canClick)

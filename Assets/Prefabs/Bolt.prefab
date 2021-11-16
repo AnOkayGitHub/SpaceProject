@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcce3db2fac74da4b8d4fcf0e5e3896e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 250
+  speed: 300
   destroyPS: {fileID: 7629934382174148324, guid: 939659dd4e965444e866b840cb427761, type: 3}
   propDestroyPS: {fileID: 7796001184398024362, guid: 7a807f269cc298d429d833a071e30adb, type: 3}
   destroySpawn: {fileID: 4420203660601009678}

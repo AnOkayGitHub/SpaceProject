@@ -911,8 +911,8 @@ MonoBehaviour:
   m_LightType: 1
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.806
-  m_Color: {r: 0.4784314, g: 0.9960785, b: 0.85098046, a: 1}
-  m_Intensity: 0.59
+  m_Color: {r: 0.7216981, g: 1, b: 0.92199117, a: 1}
+  m_Intensity: 1
   m_LightVolumeOpacity: 0
   m_ApplyToSortingLayers: 00000000030d4e27b9cf4c90
   m_LightCookieSprite: {fileID: 0}
@@ -1490,8 +1490,8 @@ MonoBehaviour:
   m_LightType: 1
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.806
-  m_Color: {r: 0.35640648, g: 1, b: 0.2216981, a: 1}
-  m_Intensity: 0.59
+  m_Color: {r: 0.514151, g: 1, b: 0.54740304, a: 1}
+  m_Intensity: 1
   m_LightVolumeOpacity: 0
   m_ApplyToSortingLayers: 00000000030d4e27b9cf4c90
   m_LightCookieSprite: {fileID: 0}
