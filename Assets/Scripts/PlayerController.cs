@@ -190,7 +190,7 @@ public class PlayerController : MonoBehaviour
             movement.x = 0;
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && World.currentRoom.cleared)
         {
             if (doorTouching != null && doorTouching.transform.GetChild(0).gameObject.activeSelf)
             {
@@ -231,7 +231,7 @@ public class PlayerController : MonoBehaviour
         Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
         Vector3 dir = Input.mousePosition - pos;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        proj.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        proj.transform.rotation = Quaternion.AngleAxis(angle + projOffset, Vector3.forward);
         proj.GetComponent<Projectile>().SetLifetime(projDestroyTime);
 
         
@@ -246,9 +246,20 @@ public class PlayerController : MonoBehaviour
     {
         if(collider.gameObject.tag == "Item")
         {
-            Destroy(collider.gameObject, 0f);
-            itemPickupSource.pitch = Random.Range(0.8f, 1.2f);
-            itemPickupSource.Play();
+            RandomizeItem item = collider.transform.GetChild(0).gameObject.GetComponent<RandomizeItem>();
+            string n = item.GetName();
+            Sprite s = item.GetSprite();
+
+            if (!World.items.ContainsKey(n))
+            {
+                itemPickupSource.pitch = Random.Range(0.8f, 1.2f);
+                itemPickupSource.Play();
+
+                World.items.Add(item.GetName(), item.GetSprite());
+                uiUpdater.UpdateItems(n, s);
+                Destroy(collider.gameObject, 0f);
+            }
+            
 
         }
         else if (collider.gameObject.tag == "Coin")
@@ -260,7 +271,7 @@ public class PlayerController : MonoBehaviour
             coinPickupSource.pitch = Random.Range(1.2f, 1.4f);
             coinPickupSource.Play();
             World.coins ++;
-            uiUpdater.UpdateValues();
+            uiUpdater.UpdateCoins();
         }
     }
 }

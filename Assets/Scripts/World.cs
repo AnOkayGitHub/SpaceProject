@@ -12,4 +12,9 @@ public static class World
     public static int coins = 0;
     public static int level = 1;
     public static GameObject player;
+    public static Dictionary<string, Sprite> items = new Dictionary<string, Sprite>();
+    public static float timeBeforeEnemySpawn = 0f;
+    public static Room currentRoom;
+    public static int currentEnemyCount = 999;
+    public static bool currentRoomCleared = false;
 }

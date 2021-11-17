@@ -52,9 +52,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 46bfde539828cec42b7aa6f6b2c8cc9e, type: 3}
   - {fileID: 21300000, guid: a52fe0adfde7b064791908273806cbfa, type: 3}
   - {fileID: 21300000, guid: 1aa83795fe8183448ab1264eb6e1291e, type: 3}
-  destroyChance: 20
+  - {fileID: 21300000, guid: 74a58625919b1764c8a4bfedc6d369fa, type: 3}
+  - {fileID: 21300000, guid: b8c6dcae390a6ce48b7b1280a5eab3af, type: 3}
+  destroyChance: 30
   coinPrefab: {fileID: 6227025651975922410, guid: ee549835c6cbb2045a53384a0a80fcef, type: 3}
-  coinAmount: 6
+  coinAmount: 3
 --- !u!61 &316631435992777886
 BoxCollider2D:
   m_ObjectHideFlags: 0

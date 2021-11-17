@@ -67,6 +67,18 @@ public class Projectile : MonoBehaviour
         rb.velocity = transform.right * speed * Time.deltaTime;
     }
 
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.name == "ProjDestroy")
+        {
+            if (!hasDestroyed)
+            {
+                DestroySelf();
+            }
+        }
+        
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(!hasDestroyed)

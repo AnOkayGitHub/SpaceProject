@@ -25,6 +25,7 @@ public class Level : MonoBehaviour
     [SerializeField] private Animator scanner;
     [SerializeField] private float timeBetweenScans = 4f;
     [SerializeField] private float introMovieTime;
+    [SerializeField] private UpdateUI uiUpdater;
 
     private void Start()
     {
@@ -47,6 +48,7 @@ public class Level : MonoBehaviour
 
     private IEnumerator WaitForGeneration()
     {
+        uiUpdater.UpdateLevel();
         yield return new WaitForSeconds(timeBeforeGeneration);
         StartGeneration();
     }
@@ -123,7 +125,6 @@ public class Level : MonoBehaviour
             } 
             else
             {
-                Debug.Log("Boss Room Spawned");
                 newRoom = (GameObject)Instantiate(bossRoomPrefab);
             }
 

@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 7924745728233598465}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 1}
   m_Children:
   - {fileID: 437194681391108503}
   m_Father: {fileID: 0}
@@ -110,6 +110,7 @@ GameObject:
   m_Component:
   - component: {fileID: 437194681391108503}
   - component: {fileID: 8706886696589598604}
+  - component: {fileID: 5702247887428058323}
   m_Layer: 0
   m_Name: GFX
   m_TagString: Untagged
@@ -182,3 +183,31 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5702247887428058323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8357103001185541928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7679c277dd3ee64d89725bc1e9a9fb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 9073731263476341212, guid: 23d8cd907b190d74db94e290ae41185a, type: 3}
+  - {fileID: 8903855049071503771, guid: 97ea0c6780ad9d44da2826c7af230dd9, type: 3}
+  - {fileID: -5937882157145219480, guid: 821075c28039a6a41b34baec891586df, type: 3}
+  - {fileID: 1930437408392527357, guid: 315926e3f8acd5a4db7f9c0ffc3415c0, type: 3}
+  - {fileID: 2923181827070173576, guid: e68df4478f3bf3443b9cc277ad5df84e, type: 3}
+  - {fileID: -6179614275229353623, guid: f5fb689e659bfdc448f66515c8eb9dd7, type: 3}
+  - {fileID: -1823535908205110754, guid: a4781befa97cafb4b98a24a535d9e376, type: 3}
+  names:
+  - Mystery Vaccine
+  - NVG
+  - Flashlight
+  - Suit Upgrade
+  - Alien Tech
+  - Tesla Coil
+  - Armor

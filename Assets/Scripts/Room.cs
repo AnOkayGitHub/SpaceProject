@@ -10,8 +10,13 @@ public class Room : MonoBehaviour
     private bool[] neighbors = new bool[] { false, false, false, false };
     private bool done = false;
     private bool doorsDone = false;
-    private bool cleared = false;
+    public bool cleared = false;
     private bool doorsOpened = false;
+    private bool enemiesSpawned = false;
+    private bool canCheckCleared = false;
+    private int enemyCount = 0;
+
+    [SerializeField] private GameObject[] enemySpawnPoints;
 
     void Start()
     {
@@ -19,8 +24,10 @@ public class Room : MonoBehaviour
         animator = GetComponent<Animator>();
         doorAnimator = transform.GetChild(0).gameObject.GetComponent<Animator>();
 
-        // Debug
-        cleared = true;
+        if(gameObject.name == "StartingRoom")
+        {
+            cleared = true;
+        }
     }
 
     private void Update()
@@ -29,6 +36,11 @@ public class Room : MonoBehaviour
         {
             doorsOpened = true;
             doorAnimator.Play("DoorsOpen", -1, 0f);
+        }
+
+        if(World.currentEnemyCount == 0 && World.currentRoom == this && canCheckCleared)
+        {
+            cleared = true;
         }
 
         if(!done)
@@ -93,6 +105,7 @@ public class Room : MonoBehaviour
 
         else if(collision.gameObject.tag == "Player")
         {
+            World.currentRoom = this;
             World.mainCam.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
             if (!World.discoveredRooms.Contains(gameObject))
             {
@@ -119,6 +132,13 @@ public class Room : MonoBehaviour
                     }
                 }
             }
+
+            if(!enemiesSpawned)
+            {
+                enemiesSpawned = true;
+                DoEnemySpawn();
+            }
+            
         }
     }
 
@@ -139,9 +159,27 @@ public class Room : MonoBehaviour
         }
     }
 
-        private Transform[] GetDoors()
+    private Transform[] GetDoors()
     {
         return doors;
     }
 
+    private void DoEnemySpawn()
+    {
+        StartCoroutine("WaitForSpawn");
+    }
+
+    private IEnumerator WaitForSpawn()
+    {
+        yield return new WaitForSeconds(World.timeBeforeEnemySpawn);
+
+        foreach (GameObject spawnPoint in enemySpawnPoints)
+        {
+            SpawnEnemies se = spawnPoint.GetComponent<SpawnEnemies>();
+            se.Spawn();
+            enemyCount += se.enemiesSpawned;
+        }
+        World.currentEnemyCount = enemyCount;
+        canCheckCleared = true;
+    }
 }
