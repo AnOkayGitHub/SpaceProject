@@ -6,6 +6,7 @@ public class Room : MonoBehaviour
 {
     private Animator animator;
     private Animator doorAnimator;
+    private AudioSource doorOpenSource;
     private Transform[] doors;
     private bool[] neighbors = new bool[] { false, false, false, false };
     private bool done = false;
@@ -23,6 +24,7 @@ public class Room : MonoBehaviour
         doors = new Transform[] { transform.GetChild(0).GetChild(0).GetChild(0), transform.GetChild(0).GetChild(1).GetChild(0), transform.GetChild(0).GetChild(2).GetChild(0), transform.GetChild(0).GetChild(3).GetChild(0) };
         animator = GetComponent<Animator>();
         doorAnimator = transform.GetChild(0).gameObject.GetComponent<Animator>();
+        doorOpenSource = GetComponent<AudioSource>();
 
         if(gameObject.name == "StartingRoom")
         {
@@ -36,6 +38,7 @@ public class Room : MonoBehaviour
         {
             doorsOpened = true;
             doorAnimator.Play("DoorsOpen", -1, 0f);
+            doorOpenSource.Play();
         }
 
         if(World.currentEnemyCount == 0 && World.currentRoom == this && canCheckCleared)

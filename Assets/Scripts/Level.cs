@@ -23,6 +23,7 @@ public class Level : MonoBehaviour
     [SerializeField] private bool waitForGenToHide = false;
     [SerializeField] private bool doIntroMovie = true;
     [SerializeField] private Animator scanner;
+    [SerializeField] private Animator introAnimator;
     [SerializeField] private float timeBetweenScans = 4f;
     [SerializeField] private float introMovieTime;
     [SerializeField] private UpdateUI uiUpdater;
@@ -219,6 +220,7 @@ public class Level : MonoBehaviour
     {
         if(doIntroMovie)
         {
+            introAnimator.Play("HUD Init", -1, 0f);
             yield return new WaitForSeconds(introMovieTime);
         }
         

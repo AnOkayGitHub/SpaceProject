@@ -7,7 +7,7 @@ public class RandomizeItem : MonoBehaviour
     [SerializeField] private Sprite[] sprites;
     [SerializeField] private string[] names;
     private SpriteRenderer spriteRenderer;
-    private string name;
+    private string itemName;
     private int id;
 
     private void Start()
@@ -20,9 +20,9 @@ public class RandomizeItem : MonoBehaviour
     {
         id = Random.Range(0, sprites.Length);
         spriteRenderer.sprite = sprites[id];
-        name = names[id];
+        itemName = names[id];
 
-        if(World.items.ContainsKey(name))
+        if(World.items.ContainsKey(itemName))
         {
             BecomeNewItem();
         }
@@ -30,7 +30,7 @@ public class RandomizeItem : MonoBehaviour
 
     public string GetName()
     {
-        return name;
+        return itemName;
     }
 
     public Sprite GetSprite()

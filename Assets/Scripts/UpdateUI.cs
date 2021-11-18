@@ -18,7 +18,7 @@ public class UpdateUI : MonoBehaviour
 
     public void UpdateLevel()
     {
-        levelText.text = World.level.ToString();
+        levelText.text = "Floor " + World.level.ToString();
     }
 
     public void UpdateItems(string t, Sprite s)

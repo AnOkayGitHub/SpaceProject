@@ -16,6 +16,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private GameObject propDestroyPS;
     [SerializeField] private Transform destroySpawn;
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private float damage;
     
 
     // Start is called before the first frame update
@@ -100,6 +101,11 @@ public class Projectile : MonoBehaviour
                 collision.gameObject.GetComponent<AudioSource>().Play();
                 Destroy(ps, 1f);
 
+            }
+            else if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            {
+                Enemy enemy = collision.gameObject.GetComponent<Enemy>();
+                enemy.health -= damage;
             }
         }
         
