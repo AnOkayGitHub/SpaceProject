@@ -262,4 +262,5 @@ MonoBehaviour:
   animator: {fileID: 6021625382622029538}
   searchRadius: 3
   randomMoveDelay: 3
+  sleepTime: 0.5
   health: 75
