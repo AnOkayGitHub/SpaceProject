@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,34 +22,62 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float footstepTime;
     [SerializeField] private float hurtTime;
     [SerializeField] private Color hurtColor;
+    [SerializeField] private float upgradedDamage;
+    [SerializeField] private Color boosterColor;
+    [SerializeField] private float boosterClickDelay;
+    [SerializeField] private VolumeProfile volumeProfile;
+    [SerializeField] private float pegLegSpeed;
+    [SerializeField] private Color armorColor;
+    [SerializeField] private Image healthbar;
+    [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int health;
+    [SerializeField] private SpriteRenderer gfx;
 
+    private ColorAdjustments colorAdjustment;
+    private ColorAdjustments caVal;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private Vector3 movement;
     private GameObject doorTouching;
+    private GameObject transitionTouching;
     private bool isMoving = false;
     private bool canClick = true;
     private int facingX;
     private int facingY;
     private bool canStep = true;
     private bool canChangeColor = true;
+    [SerializeField] private bool[] hasItem = new bool[] { false, false, false, false, false, false, false };
 
     private void Start()
     {
+        health = maxHealth;
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
-        if(World.player == null)
+        if (World.player == null)
         {
             World.player = gameObject;
         }
+
+        if (volumeProfile.TryGet<ColorAdjustments>(out caVal)) 
+        { 
+            colorAdjustment = caVal; 
+        }
+        colorAdjustment.active = false;
+
+        pegLegSpeed = speed * 1.5f;
+        boosterClickDelay = projClickDelay / 1.5f;
+        World.startLocation = transform.position;
     }
 
     void Update()
     {
+        UpdateItemEffects();
+
         if (World.readyToPlay)
         {
             GetInput();
             DetectDoors();
+            DetectTransition();
             GetFacing();
 
             if (isMoving && canStep)
@@ -58,10 +89,10 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if(spriteRenderer.color != Color.white)
+        if (spriteRenderer.color != Color.white)
         {
             spriteRenderer.color = Color.Lerp(spriteRenderer.color, Color.white, hurtTime * Time.deltaTime);
-            if(canChangeColor)
+            if (canChangeColor)
             {
                 canChangeColor = false;
                 StartCoroutine("WaitForColor");
@@ -80,6 +111,44 @@ public class PlayerController : MonoBehaviour
             rb.velocity = Vector2.zero;
         }
 
+    }
+
+    private void UpdateItemEffects()
+    {
+        foreach(KeyValuePair<string, Sprite> kvp in World.items)
+        {
+            switch(kvp.Key)
+            {
+                case "Booster Shot":
+                    hasItem[0] = true;
+                    break;
+                case "NVG":
+                    hasItem[1] = true;
+                    colorAdjustment.active = true;
+                    break;
+                case "Bionic Peg Leg":
+                    hasItem[2] = true;
+                    speed = pegLegSpeed;
+                    break;
+                case "Suit Upgrade":
+                    hasItem[3] = true;
+                    break;
+                case "Alien Tech":
+                    hasItem[4] = true;
+                    break;
+                case "Tesla Coil":
+                    hasItem[5] = true;
+                    break;
+                case "Armor":
+                    hasItem[6] = true;
+                    healthbar.color = armorColor;
+                    gfx.color = armorColor;
+                    maxHealth = 150;
+                    
+                    health = maxHealth;
+                    break;
+            }
+        }
     }
 
     private IEnumerator WaitForColor()
@@ -153,6 +222,25 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void DetectTransition()
+    {
+        Collider2D[] found = Physics2D.OverlapCircleAll(transform.position, 0.6f);
+
+
+        foreach (Collider2D col in found)
+        {
+            if (col.gameObject.tag == "Transition")
+            {
+                transitionTouching = col.gameObject;
+                break;
+            }
+            else
+            {
+                transitionTouching = null;
+            }
+        }
+    }
+
     private void GetInput()
     {
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
@@ -197,6 +285,18 @@ public class PlayerController : MonoBehaviour
                 transform.position = (Vector2)doorTouching.transform.position + doorTouching.GetComponent<Door>().offset;
                 doorPassSource.Play();
             }
+            else if (transitionTouching != null)
+            {
+                foreach(GameObject g in GameObject.FindGameObjectsWithTag("Coin"))
+                {
+                    Destroy(g, 0f);
+                }
+
+                World.level ++;
+                World.levelManager.Create();
+                transform.position = World.startLocation;
+                
+            }
         }
 
         if(Input.GetKeyDown(KeyCode.O))
@@ -227,16 +327,52 @@ public class PlayerController : MonoBehaviour
     {
         GameObject proj = Instantiate(projectilePrefab);
         proj.transform.position = projSpawn.position;
-       
+        Projectile p = proj.GetComponent<Projectile>();
+
+
+        if (hasItem[0])
+        {
+            proj.GetComponent<SpriteRenderer>().color = boosterColor;
+            projClickDelay = boosterClickDelay;
+        }
+
+        if (hasItem[3])
+        {
+            p.SetDamage(upgradedDamage);
+        }
+
         Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
         Vector3 dir = Input.mousePosition - pos;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         proj.transform.rotation = Quaternion.AngleAxis(angle + projOffset, Vector3.forward);
         proj.GetComponent<Projectile>().SetLifetime(projDestroyTime);
 
-        
+        if (hasItem[5])
+        {
+            GameObject proj2 = Instantiate(projectilePrefab);
+            proj2.transform.position = projSpawn.position;
+            proj2.transform.rotation = Quaternion.AngleAxis(angle + projOffset + 15, Vector3.forward);
+            proj2.GetComponent<Projectile>().SetLifetime(projDestroyTime);
+            Projectile p2 = proj2.GetComponent<Projectile>();
 
-        if(facingY == 1)
+            if (hasItem[3])
+            {
+                p2.SetDamage(upgradedDamage);
+            }
+
+            GameObject proj3 = Instantiate(projectilePrefab);
+            proj3.transform.position = projSpawn.position;
+            proj3.transform.rotation = Quaternion.AngleAxis(angle + projOffset - 15, Vector3.forward);
+            proj3.GetComponent<Projectile>().SetLifetime(projDestroyTime);
+            Projectile p3 = proj3.GetComponent<Projectile>();
+            if (hasItem[3])
+            {
+                p3.SetDamage(upgradedDamage);
+            }
+
+        }
+
+        if (facingY == 1)
         {
             proj.GetComponent<SpriteRenderer>().sortingOrder = -10;
         }
@@ -259,7 +395,10 @@ public class PlayerController : MonoBehaviour
                 uiUpdater.UpdateItems(n, s);
                 Destroy(collider.gameObject, 0f);
             }
-            
+
+            UpdateItemEffects();
+
+
 
         }
         else if (collider.gameObject.tag == "Coin")
@@ -270,7 +409,16 @@ public class PlayerController : MonoBehaviour
             collider.gameObject.GetComponent<CircleCollider2D>().enabled = false;
             coinPickupSource.pitch = Random.Range(1.2f, 1.4f);
             coinPickupSource.Play();
-            World.coins ++;
+
+            if(hasItem[4])
+            {
+                World.coins += 2;
+            } 
+            else
+            {
+                World.coins++;
+            }
+            
             uiUpdater.UpdateCoins();
         }
     }

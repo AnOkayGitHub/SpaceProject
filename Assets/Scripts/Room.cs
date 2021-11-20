@@ -16,6 +16,7 @@ public class Room : MonoBehaviour
     private bool enemiesSpawned = false;
     private bool canCheckCleared = false;
     private int enemyCount = 0;
+    private GameObject toHide;
 
     [SerializeField] private GameObject[] enemySpawnPoints;
 
@@ -26,9 +27,51 @@ public class Room : MonoBehaviour
         doorAnimator = transform.GetChild(0).gameObject.GetComponent<Animator>();
         doorOpenSource = GetComponent<AudioSource>();
 
-        if(gameObject.name == "StartingRoom")
+        if (gameObject.name == "StartingRoom")
         {
             cleared = true;
+        }
+        else if (gameObject.name.Contains("Boss Room(Clone)"))
+        {
+            toHide = transform.GetChild(6).gameObject;
+            toHide.gameObject.SetActive(false);
+        }
+    }
+
+    public void Reset()
+    {
+        if(World.level > 1)
+        {
+            doorAnimator.Play("DoorsClose");
+        }
+        
+
+        if (gameObject.name == "StartingRoom")
+        {
+            cleared = true;
+        }
+        else
+        {
+            if (gameObject.name.Contains("Boss Room(Clone)"))
+            {
+                toHide = transform.GetChild(6).gameObject;
+                toHide.gameObject.SetActive(false);
+            }
+
+            cleared = false;
+        }
+        neighbors = new bool[] { false, false, false, false };
+        done = false;
+        doorsDone = false;
+
+        doorsOpened = false;
+        enemiesSpawned = false;
+        canCheckCleared = false;
+        enemyCount = 0;
+
+        for (int i = 0; i < 4; i++)
+        {
+            doors[i].gameObject.SetActive(true);
         }
     }
 
@@ -44,6 +87,11 @@ public class Room : MonoBehaviour
         if(World.currentEnemyCount == 0 && World.currentRoom == this && canCheckCleared)
         {
             cleared = true;
+
+            if (gameObject.name == "Boss Room(Clone)")
+            {
+                toHide.gameObject.SetActive(true);
+            }
         }
 
         if(!done)
@@ -68,7 +116,6 @@ public class Room : MonoBehaviour
             {
                 if (!doorsDone)
                 {
-                    Debug.Log("Called");
                     GetNeighbors();
                     doorsDone = true;
                 }
@@ -85,7 +132,7 @@ public class Room : MonoBehaviour
             {
                 foreach(Collider2D collider in collisions)
                 {
-                    if (collider.gameObject.tag == "Occupied Cell" && collider.gameObject != gameObject) 
+                    if ((collider.gameObject.tag == "Occupied Cell" || collider.gameObject.tag == "StartingRoom") && collider.gameObject != gameObject) 
                     {
                         neighbors[i] = true;
                     }
@@ -175,6 +222,12 @@ public class Room : MonoBehaviour
     private IEnumerator WaitForSpawn()
     {
         yield return new WaitForSeconds(World.timeBeforeEnemySpawn);
+
+        foreach (GameObject spawnPoint in enemySpawnPoints)
+        {
+            SpawnEnemies se = spawnPoint.GetComponent<SpawnEnemies>();
+            se.enemiesSpawned = 0;
+        }
 
         foreach (GameObject spawnPoint in enemySpawnPoints)
         {

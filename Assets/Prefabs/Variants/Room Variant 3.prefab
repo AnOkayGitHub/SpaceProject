@@ -1830,7 +1830,6 @@ MonoBehaviour:
   enemySpawnPoints:
   - {fileID: 3491677502634151185}
   - {fileID: 3843095168793362847}
-  - {fileID: 0}
   - {fileID: 2109589811523583590}
 --- !u!82 &1673348677386906666
 AudioSource:

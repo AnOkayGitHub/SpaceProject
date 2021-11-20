@@ -17,6 +17,8 @@ public class Projectile : MonoBehaviour
     [SerializeField] private Transform destroySpawn;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private float damage;
+
+    public bool upgraded = false;
     
 
     // Start is called before the first frame update
@@ -30,6 +32,7 @@ public class Projectile : MonoBehaviour
 
     private void Update()
     {
+
         if(currentTime < lifetime)
         {
             currentTime += Time.deltaTime;
@@ -43,9 +46,15 @@ public class Projectile : MonoBehaviour
         }
     }
 
+    public void SetDamage(float newDamage)
+    {
+        damage = newDamage;
+    }
+
     private void DestroySelf()
     {
         Destroy(gameObject, 0.5f);
+        Debug.Log("Destroyed");
         if(!hasDestroyed)
         {
             hasDestroyed = true;
@@ -74,6 +83,7 @@ public class Projectile : MonoBehaviour
         {
             if (!hasDestroyed)
             {
+                
                 DestroySelf();
             }
         }
@@ -84,10 +94,9 @@ public class Projectile : MonoBehaviour
     {
         if(!hasDestroyed)
         {
-            DestroySelf();
-
             if (collision.gameObject.layer == LayerMask.NameToLayer("Prop"))
             {
+                DestroySelf();
                 Destroy(collision.gameObject, 1f);
                 collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 collision.gameObject.GetComponent<BoxCollider2D>().enabled = false;
@@ -100,10 +109,10 @@ public class Projectile : MonoBehaviour
                 collision.gameObject.GetComponent<AudioSource>().pitch = Random.Range(1f, 1.2f);
                 collision.gameObject.GetComponent<AudioSource>().Play();
                 Destroy(ps, 1f);
-
             }
             else if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
+                DestroySelf();
                 Enemy enemy = collision.gameObject.GetComponent<Enemy>();
                 enemy.health -= damage;
             }

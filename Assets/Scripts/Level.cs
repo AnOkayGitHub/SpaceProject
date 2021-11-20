@@ -6,6 +6,7 @@ public class Level : MonoBehaviour
 {
     [SerializeField] private int roomSize = 7;
     [SerializeField] private int gridSize = 10;
+    [SerializeField] private int bossLevel = 5;
     private Dictionary<Vector2, bool> grid = new Dictionary<Vector2, bool>();
     private List<Vector2> occupiedCells = new List<Vector2>();
     private List<Vector2> totalOpenNeighbors = new List<Vector2>();
@@ -17,6 +18,7 @@ public class Level : MonoBehaviour
     [SerializeField] private GameObject[] roomPrefabs;
     [SerializeField] private GameObject[] itemRoomPrefabs;
     [SerializeField] private GameObject bossRoomPrefab;
+    [SerializeField] private GameObject transitionRoomPrefab;
     [SerializeField] private Transform roomHolder;
     [SerializeField] private float timeBetweenRoomCreation;
     [SerializeField] private float timeBeforeGeneration = 2f;
@@ -30,17 +32,48 @@ public class Level : MonoBehaviour
 
     private void Start()
     {
-        World.waitForGeneration = waitForGenToHide;
-        rooms = new List<GameObject>();
-        World.mainCam = Camera.main.gameObject;
 
-        itemRooms = Mathf.RoundToInt(Random.Range(1, (World.level / 2) + 1));
-
-        for(int i = 0; i < 4; i++)
+        if(World.levelManager == null)
         {
-            World.discoveredRooms.Add(transform.GetChild(0).gameObject);
+            World.levelManager = this;
         }
-        
+
+        if(World.mainCam == null)
+        {
+            World.mainCam = Camera.main.gameObject;
+        }
+
+        Create();
+    }
+
+    public void Create()
+    {
+        World.readyToPlay = false;
+        roomsSpawned = 5;
+        World.waitForGeneration = waitForGenToHide;
+        World.discoveredRooms = new List<GameObject>();
+        World.currentEnemyCount = 999;
+
+        uiUpdater.UpdateLevel();
+        rooms = new List<GameObject>();
+        grid = new Dictionary<Vector2, bool>();
+        occupiedCells = new List<Vector2>();
+        totalOpenNeighbors = new List<Vector2>();
+
+        itemRooms = 1;
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            if(i > 4)
+            {
+                Destroy(transform.GetChild(i).gameObject);
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            World.discoveredRooms.Add(transform.GetChild(i).gameObject);
+        }
 
         // Create a 10x10 grid of empty cells, 7x7 units in size
         StartCoroutine("WaitForGeneration");
@@ -49,7 +82,6 @@ public class Level : MonoBehaviour
 
     private IEnumerator WaitForGeneration()
     {
-        uiUpdater.UpdateLevel();
         yield return new WaitForSeconds(timeBeforeGeneration);
         StartGeneration();
     }
@@ -61,9 +93,6 @@ public class Level : MonoBehaviour
 
     private void StartGeneration()
     {
-        grid = new Dictionary<Vector2, bool>();
-        occupiedCells = new List<Vector2>();
-
         // Start at the top left corner and make all cells empty
         int halfway = (gridSize / 2) * roomSize;
 
@@ -112,7 +141,7 @@ public class Level : MonoBehaviour
 
     private IEnumerator SpawnRooms()
     {
-        for (int i = roomsSpawned; i < maxRooms - itemRooms; i++)
+        for (int i = roomsSpawned; i < maxRooms; i++)
         {
             
             UpdateAvailableNeighbors();
@@ -120,14 +149,29 @@ public class Level : MonoBehaviour
             Vector2 newRoomPos = totalOpenNeighbors[Random.Range(0, totalOpenNeighbors.Count)];
             GameObject newRoom;
 
-            if (i != maxRooms - itemRooms - 1)
+            if(World.level % bossLevel == 0)
             {
-                newRoom = (GameObject)Instantiate(roomPrefabs[Random.Range(0, roomPrefabs.Length - 1)]);
-            } 
+                if (i != maxRooms - itemRooms - 1)
+                {
+                    newRoom = (GameObject)Instantiate(roomPrefabs[Random.Range(0, roomPrefabs.Length - 1)]);
+                }
+                else
+                {
+                    newRoom = (GameObject)Instantiate(bossRoomPrefab);
+                }
+            }
             else
             {
-                newRoom = (GameObject)Instantiate(bossRoomPrefab);
+                if (i != maxRooms - itemRooms - 1)
+                {
+                    newRoom = (GameObject)Instantiate(roomPrefabs[Random.Range(0, roomPrefabs.Length - 1)]);
+                }
+                else
+                {
+                    newRoom = (GameObject)Instantiate(transitionRoomPrefab);
+                }
             }
+            
 
             newRoom.transform.position = newRoomPos;
             newRoom.transform.parent = roomHolder;
@@ -173,6 +217,16 @@ public class Level : MonoBehaviour
         }
 
         World.canHideRooms = true;
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            if (i <= 4)
+            {
+                Room r = transform.GetChild(i).gameObject.GetComponent<Room>();
+                r.Reset();
+            }
+        }
+
         StartCoroutine("WaitForPlay");
     }
 

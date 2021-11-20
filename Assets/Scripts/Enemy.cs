@@ -26,7 +26,8 @@ public class Enemy : MonoBehaviour
         Wander,
         Follow,
         Attack,
-        Destroy
+        Destroy,
+        Celebrate
     }
 
     private void Start()

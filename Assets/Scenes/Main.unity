@@ -4489,7 +4489,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomSize: 9
   gridSize: 10
-  maxRooms: 8
+  bossLevel: 5
+  maxRooms: 9
   roomPrefabs:
   - {fileID: 8549819098341016047, guid: dbd491645d6c30c42a8bb2f73d8ffd5c, type: 3}
   - {fileID: 9174143146403977304, guid: 7583db9baa67cb0459b073c45d586d35, type: 3}
@@ -4498,8 +4499,8 @@ MonoBehaviour:
   - {fileID: 9174143146403977304, guid: be5d9450aa0c8cd44bbb9c1f35022033, type: 3}
   itemRoomPrefabs:
   - {fileID: 1266139016651309657, guid: 978493db3ab728047866b3ccf31cc420, type: 3}
-  - {fileID: 1266139016651309657, guid: f5a3703b283af3d40aa1bd4d3708ada6, type: 3}
   bossRoomPrefab: {fileID: 9174143146403977304, guid: faeca88f7722c3b468906f8263a31f1d, type: 3}
+  transitionRoomPrefab: {fileID: 1266139016651309657, guid: f5a3703b283af3d40aa1bd4d3708ada6, type: 3}
   roomHolder: {fileID: 1485357186}
   timeBetweenRoomCreation: 0
   timeBeforeGeneration: 0
@@ -6183,6 +6184,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StartingRoom
       objectReference: {fileID: 0}
+    - target: {fileID: 5438349491427963224, guid: c684788fab2a10743897fee26130338d, type: 3}
+      propertyPath: m_TagString
+      value: StartingRoom
+      objectReference: {fileID: 0}
     - target: {fileID: 5653087028947841241, guid: c684788fab2a10743897fee26130338d, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -6301,6 +6306,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
+      propertyPath: healthbar
+      value: 
+      objectReference: {fileID: 1340678096}
+    - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
       propertyPath: projSpawn
       value: 
       objectReference: {fileID: 141651839}
@@ -6329,8 +6338,44 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
+      propertyPath: armorColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
+      propertyPath: armorColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
+      propertyPath: armorColor.g
+      value: 0.6272721
+      objectReference: {fileID: 0}
+    - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
+      propertyPath: armorColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
       propertyPath: footstepTime
       value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
+      propertyPath: volumeProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: c01d9bf3e7cab334e812975c4f7db6fc, type: 2}
+    - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
+      propertyPath: boosterColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
+      propertyPath: boosterColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
+      propertyPath: boosterColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
+      propertyPath: boosterColor.r
+      value: 0.10984874
       objectReference: {fileID: 0}
     - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
       propertyPath: doorPassSource
@@ -6342,7 +6387,11 @@ PrefabInstance:
       objectReference: {fileID: 618957665}
     - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
       propertyPath: projClickDelay
-      value: 0.3
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
+      propertyPath: upgradedDamage
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
       propertyPath: projDestroyTime
@@ -6356,6 +6405,10 @@ PrefabInstance:
       propertyPath: itemPickupSource
       value: 
       objectReference: {fileID: 650001780}
+    - target: {fileID: 317748611, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
+      propertyPath: hasItem.Array.data[5]
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 843501882, guid: 5cfee5e50afb5aa40a5ad2fc13ef6528, type: 3}
       propertyPath: m_BackGroundColor.b
       value: 0.5471698
