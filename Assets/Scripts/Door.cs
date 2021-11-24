@@ -4,5 +4,10 @@ using UnityEngine;
 
 public class Door : MonoBehaviour
 {
-    public Vector2 offset;
+    [SerializeField] private Vector2 offset;
+
+    public Vector2 GetOffset()
+    {
+        return offset;
+    }
 }

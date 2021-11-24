@@ -12,6 +12,7 @@ TagManager:
   - Proj
   - Coin
   - Transition
+  - HP
   layers:
   - Default
   - TransparentFX
@@ -27,7 +28,7 @@ TagManager:
   - Gap
   - Enemy
   - Destroy
-  - 
+  - EnemyProjectile
   - 
   - 
   - 
@@ -54,6 +55,9 @@ TagManager:
     locked: 0
   - name: Item
     uniqueID: 3357269091
+    locked: 0
+  - name: Enemy
+    uniqueID: 4036172965
     locked: 0
   - name: Player
     uniqueID: 2420953017

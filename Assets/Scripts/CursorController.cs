@@ -5,6 +5,7 @@ using UnityEngine;
 public class CursorController : MonoBehaviour
 {
     [SerializeField] private Texture2D mouseCursor;
+
     private CursorMode cursorMode = CursorMode.Auto;
 
     private void Start()

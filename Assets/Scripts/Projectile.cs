@@ -4,35 +4,32 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    [SerializeField] private GameObject destroyPS;
+    [SerializeField] private GameObject propDestroyPS;
+    [SerializeField] private Transform destroySpawn;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private float speed;
+
     private Rigidbody2D rb;
     private Animator animator;
     private float lifetime;
     private float currentTime = 0;
     private bool destroy = false;
     private bool hasDestroyed = false;
+    private float damage;
+    private bool isFriendly = true;
 
-    [SerializeField] private float speed;
-    [SerializeField] private GameObject destroyPS;
-    [SerializeField] private GameObject propDestroyPS;
-    [SerializeField] private Transform destroySpawn;
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private float damage;
-
-    public bool upgraded = false;
-    
-
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         audioSource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        animator.Play("BoltFade", -1, 0f);
+
+        animator.Play("Decay", -1, 0f);
     }
 
     private void Update()
     {
-
         if(currentTime < lifetime)
         {
             currentTime += Time.deltaTime;
@@ -45,34 +42,7 @@ public class Projectile : MonoBehaviour
             }
         }
     }
-
-    public void SetDamage(float newDamage)
-    {
-        damage = newDamage;
-    }
-
-    private void DestroySelf()
-    {
-        Destroy(gameObject, 0.5f);
-        Debug.Log("Destroyed");
-        if(!hasDestroyed)
-        {
-            hasDestroyed = true;
-            GetComponent<SpriteRenderer>().enabled = false;
-            GetComponent<BoxCollider2D>().enabled = false;
-            transform.GetChild(0).gameObject.SetActive(false);
-            transform.GetChild(1).gameObject.SetActive(false);
-            audioSource.pitch = Random.Range(0.8f, 1.4f);
-            audioSource.Play();
-            GameObject ps = (GameObject)Instantiate(destroyPS);
-            ps.transform.position = destroySpawn.position;
-            Destroy(ps, 1f);
-        }
-        
-    }
-
-    // Update is called once per frame
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         rb.velocity = transform.right * speed * Time.deltaTime;
     }
@@ -110,18 +80,66 @@ public class Projectile : MonoBehaviour
                 collision.gameObject.GetComponent<AudioSource>().Play();
                 Destroy(ps, 1f);
             }
-            else if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            
+            if (isFriendly)
             {
-                DestroySelf();
-                Enemy enemy = collision.gameObject.GetComponent<Enemy>();
-                enemy.health -= damage;
+                if(collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+                {
+                    DestroySelf();
+                    Enemy enemy = collision.gameObject.GetComponent<Enemy>();
+                    enemy.Hurt(damage);
+                    PlayerController p = World.player.gameObject.GetComponent<PlayerController>();
+
+                    if(p.GetItems()[4])
+                    {
+                        p.SetCurrentHealth(p.GetCurrentHealth() + 1f);
+                        p.UpdateHealth();
+                    }
+                }
+            } 
+            else 
+            {
+                if (collision.gameObject.tag == "Player")
+                {
+                    DestroySelf();
+                    PlayerController player = collision.gameObject.GetComponent<PlayerController>();
+                    player.Hurt(damage);
+                }
             }
         }
         
+    }
+    
+    private void DestroySelf()
+    {
+        Destroy(gameObject, 0.5f);
+        if(!hasDestroyed)
+        {
+            hasDestroyed = true;
+            GetComponent<SpriteRenderer>().enabled = false;
+            GetComponent<BoxCollider2D>().enabled = false;
+            transform.GetChild(0).gameObject.SetActive(false);
+            transform.GetChild(1).gameObject.SetActive(false);
+            audioSource.pitch = Random.Range(0.8f, 1.4f);
+            audioSource.Play();
+            GameObject ps = (GameObject)Instantiate(destroyPS);
+            ps.transform.position = destroySpawn.position;
+            Destroy(ps, 1f);
+        }
     }
 
     public void SetLifetime(float l)
     {
         lifetime = l;
+    }
+
+    public void SetFriendly(bool status)
+    {
+        isFriendly = status;
+    }
+   
+    public void SetDamage(float newDamage)
+    {
+        damage = newDamage;
     }
 }

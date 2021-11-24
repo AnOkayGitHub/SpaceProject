@@ -16,7 +16,22 @@ public class FloatTowardsPlayer : MonoBehaviour
 
     private void Update()
     {
-        if(Vector2.Distance(transform.position, World.player.transform.position) < floatRange)
+        Float();
+    }
+
+    private void Float()
+    {
+        if (gameObject.tag == "HP")
+        {
+            PlayerController pc = World.player.GetComponent<PlayerController>();
+
+            if(pc.GetCurrentHealth() == pc.GetMaxHealth())
+            {
+                return;
+            }
+        }
+
+        if (Vector2.Distance(transform.position, World.player.transform.position) < floatRange)
         {
             transform.position = Vector2.MoveTowards(transform.position, World.player.transform.position, floatSpeed * Time.deltaTime);
         }

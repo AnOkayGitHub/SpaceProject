@@ -7,50 +7,54 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float speed = 100;
-    [SerializeField] private Animator animator;
     [SerializeField] private GameObject projectilePrefab;
-    [SerializeField] private float projClickDelay = 1f;
-    [SerializeField] private float projDestroyTime = 1f;
-    [SerializeField] private float projOffset;
-    [SerializeField] private Transform projSpawn;
-    [SerializeField] private UpdateUI uiUpdater;
+    [SerializeField] private Animator animator;
     [SerializeField] private AudioSource projSource;
     [SerializeField] private AudioSource footstepSource;
     [SerializeField] private AudioSource doorPassSource;
     [SerializeField] private AudioSource itemPickupSource;
+    [SerializeField] private Transform projSpawn;
+    [SerializeField] private UpdateUI uiUpdater;
+    [SerializeField] private SpriteRenderer gfx;
+    [SerializeField] private VolumeProfile volumeProfile;
+    [SerializeField] private Color hurtColor;
+    [SerializeField] private Color boosterColor;
+    [SerializeField] private Color armorColor;
+    [SerializeField] private Color nvgColor;
+
+    [SerializeField] private float speed = 100;
+    [SerializeField] private float projClickDelay = 1f;
+    [SerializeField] private float projDestroyTime = 1f;
+    [SerializeField] private float projOffset;
     [SerializeField] private float footstepTime;
     [SerializeField] private float hurtTime;
-    [SerializeField] private Color hurtColor;
     [SerializeField] private float upgradedDamage;
-    [SerializeField] private Color boosterColor;
-    [SerializeField] private float boosterClickDelay;
-    [SerializeField] private VolumeProfile volumeProfile;
-    [SerializeField] private float pegLegSpeed;
-    [SerializeField] private Color armorColor;
-    [SerializeField] private Image healthbar;
-    [SerializeField] private int maxHealth = 100;
-    [SerializeField] private int health;
-    [SerializeField] private SpriteRenderer gfx;
-
-    private ColorAdjustments colorAdjustment;
-    private ColorAdjustments caVal;
+    [SerializeField] private float invincibleModeTime = 0.5f;
+    [SerializeField] private float maxHealth = 100;
+    [SerializeField] private float damage;
+    
+    private GameObject doorTouching;
+    private GameObject interactableTouching;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
+    private ColorAdjustments colorAdjustment;
+    private ColorAdjustments caVal;
     private Vector3 movement;
-    private GameObject doorTouching;
-    private GameObject transitionTouching;
-    private bool isMoving = false;
-    private bool canClick = true;
+    private float currentHealth;
+    private float pegLegSpeed;
+    private float boosterClickDelay;
     private int facingX;
     private int facingY;
+    private bool canHurt = true;
+    private bool isMoving = false;
+    private bool canClick = true;
     private bool canStep = true;
     private bool canChangeColor = true;
-    [SerializeField] private bool[] hasItem = new bool[] { false, false, false, false, false, false, false };
-
+    private bool[] hasItem = new bool[] { false, false, false, false, false, false, false };
+    
     private void Start()
     {
-        health = maxHealth;
+        currentHealth = maxHealth;
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
         if (World.player == null)
@@ -62,7 +66,6 @@ public class PlayerController : MonoBehaviour
         { 
             colorAdjustment = caVal; 
         }
-        colorAdjustment.active = false;
 
         pegLegSpeed = speed * 1.5f;
         boosterClickDelay = projClickDelay / 1.5f;
@@ -72,6 +75,8 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         UpdateItemEffects();
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
 
         if (World.readyToPlay)
         {
@@ -113,18 +118,70 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (collider.gameObject.tag == "Item")
+        {
+            RandomizeItem item = collider.transform.GetChild(0).gameObject.GetComponent<RandomizeItem>();
+            string n = item.GetName();
+            Sprite s = item.GetSprite();
+            string d = item.GetDesc();
+
+            if (!World.items.ContainsKey(n))
+            {
+                itemPickupSource.pitch = Random.Range(0.8f, 1.2f);
+                itemPickupSource.Play();
+
+                World.items.Add(item.GetName(), item.GetSprite());
+                uiUpdater.UpdateItems(n, s, d);
+                Destroy(collider.gameObject, 0f);
+            }
+
+            UpdateItemEffects();
+
+
+
+        }
+        else if (collider.gameObject.tag == "Coin")
+        {
+            Destroy(collider.gameObject, 1f);
+            AudioSource coinPickupSource = collider.GetComponent<AudioSource>();
+            collider.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+            collider.gameObject.GetComponent<CircleCollider2D>().enabled = false;
+            coinPickupSource.pitch = Random.Range(1.2f, 1.4f);
+            coinPickupSource.Play();
+
+            World.coins++;
+            uiUpdater.UpdateCoins();
+        }
+        else if (collider.gameObject.tag == "HP" && currentHealth < maxHealth)
+        {
+            Destroy(collider.gameObject, 1f);
+            AudioSource hpAudioSource = collider.GetComponent<AudioSource>();
+            collider.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+            collider.gameObject.GetComponent<CircleCollider2D>().enabled = false;
+            hpAudioSource.pitch = Random.Range(1.2f, 1.4f);
+            hpAudioSource.Play();
+            currentHealth += 15f;
+            UpdateHealth();
+        }
+    }
+
     private void UpdateItemEffects()
     {
         foreach(KeyValuePair<string, Sprite> kvp in World.items)
         {
             switch(kvp.Key)
             {
-                case "Booster Shot":
+                case "Vaccine":
                     hasItem[0] = true;
                     break;
                 case "NVG":
                     hasItem[1] = true;
+                    World.globalLight.intensity = 0.6f;
                     colorAdjustment.active = true;
+                    colorAdjustment.colorFilter.value = nvgColor;
+                    colorAdjustment.saturation.value = 1;
                     break;
                 case "Bionic Peg Leg":
                     hasItem[2] = true;
@@ -141,27 +198,13 @@ public class PlayerController : MonoBehaviour
                     break;
                 case "Armor":
                     hasItem[6] = true;
-                    healthbar.color = armorColor;
+                    uiUpdater.GetPlayerHealthbar().color = armorColor;
                     gfx.color = armorColor;
-                    maxHealth = 150;
-                    
-                    health = maxHealth;
+                    maxHealth = 200;
+                    currentHealth = maxHealth;
                     break;
             }
         }
-    }
-
-    private IEnumerator WaitForColor()
-    {
-        yield return new WaitForSeconds(hurtTime * 2f);
-        spriteRenderer.color = Color.white;
-        canChangeColor = true;
-    }
-
-    private IEnumerator WaitForFootsteps()
-    {
-        yield return new WaitForSeconds(footstepTime);
-        canStep = true;
     }
 
     private void GetFacing()
@@ -231,12 +274,12 @@ public class PlayerController : MonoBehaviour
         {
             if (col.gameObject.tag == "Transition")
             {
-                transitionTouching = col.gameObject;
+                interactableTouching = col.gameObject;
                 break;
             }
             else
             {
-                transitionTouching = null;
+                interactableTouching = null;
             }
         }
     }
@@ -282,12 +325,17 @@ public class PlayerController : MonoBehaviour
         {
             if (doorTouching != null && doorTouching.transform.GetChild(0).gameObject.activeSelf)
             {
-                transform.position = (Vector2)doorTouching.transform.position + doorTouching.GetComponent<Door>().offset;
+                transform.position = (Vector2)doorTouching.transform.position + doorTouching.GetComponent<Door>().GetOffset();
                 doorPassSource.Play();
             }
-            else if (transitionTouching != null)
+            else if (interactableTouching != null)
             {
                 foreach(GameObject g in GameObject.FindGameObjectsWithTag("Coin"))
+                {
+                    Destroy(g, 0f);
+                }
+
+                foreach (GameObject g in GameObject.FindGameObjectsWithTag("HP"))
                 {
                     Destroy(g, 0f);
                 }
@@ -297,11 +345,6 @@ public class PlayerController : MonoBehaviour
                 transform.position = World.startLocation;
                 
             }
-        }
-
-        if(Input.GetKeyDown(KeyCode.O))
-        {
-            spriteRenderer.color = hurtColor;
         }
 
         if(Input.GetMouseButton(0) && canClick)
@@ -314,13 +357,6 @@ public class PlayerController : MonoBehaviour
 
         isMoving = !(movement.x == 0 && movement.y == 0);
         animator.SetBool("IsMoving", isMoving);
-    }
-
-    private IEnumerator WaitForClick()
-    {
-        CreateProjectile();
-        yield return new WaitForSeconds(projClickDelay);
-        canClick = true;
     }
 
     private void CreateProjectile()
@@ -340,6 +376,10 @@ public class PlayerController : MonoBehaviour
         {
             p.SetDamage(upgradedDamage);
         }
+        else
+        {
+            p.SetDamage(damage);
+        }
 
         Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
         Vector3 dir = Input.mousePosition - pos;
@@ -349,25 +389,31 @@ public class PlayerController : MonoBehaviour
 
         if (hasItem[5])
         {
+
             GameObject proj2 = Instantiate(projectilePrefab);
             proj2.transform.position = projSpawn.position;
             proj2.transform.rotation = Quaternion.AngleAxis(angle + projOffset + 15, Vector3.forward);
             proj2.GetComponent<Projectile>().SetLifetime(projDestroyTime);
             Projectile p2 = proj2.GetComponent<Projectile>();
 
-            if (hasItem[3])
-            {
-                p2.SetDamage(upgradedDamage);
-            }
 
             GameObject proj3 = Instantiate(projectilePrefab);
             proj3.transform.position = projSpawn.position;
             proj3.transform.rotation = Quaternion.AngleAxis(angle + projOffset - 15, Vector3.forward);
             proj3.GetComponent<Projectile>().SetLifetime(projDestroyTime);
             Projectile p3 = proj3.GetComponent<Projectile>();
+
             if (hasItem[3])
             {
-                p3.SetDamage(upgradedDamage);
+                p.SetDamage(upgradedDamage / 3);
+                p2.SetDamage(upgradedDamage / 3);
+                p3.SetDamage(upgradedDamage / 3);
+            }
+            else
+            {
+                p.SetDamage(damage / 3);
+                p2.SetDamage(damage / 3);
+                p3.SetDamage(damage / 3);
             }
 
         }
@@ -378,50 +424,68 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collider)
+    public void Hurt(float damage)
     {
-        if(collider.gameObject.tag == "Item")
+        if (canHurt)
         {
-            RandomizeItem item = collider.transform.GetChild(0).gameObject.GetComponent<RandomizeItem>();
-            string n = item.GetName();
-            Sprite s = item.GetSprite();
+            canHurt = false;
+            currentHealth -= damage;
+            UpdateHealth();
 
-            if (!World.items.ContainsKey(n))
-            {
-                itemPickupSource.pitch = Random.Range(0.8f, 1.2f);
-                itemPickupSource.Play();
-
-                World.items.Add(item.GetName(), item.GetSprite());
-                uiUpdater.UpdateItems(n, s);
-                Destroy(collider.gameObject, 0f);
-            }
-
-            UpdateItemEffects();
-
-
-
-        }
-        else if (collider.gameObject.tag == "Coin")
-        {
-            Destroy(collider.gameObject, 1f);
-            AudioSource coinPickupSource = collider.GetComponent<AudioSource>();
-            collider.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-            collider.gameObject.GetComponent<CircleCollider2D>().enabled = false;
-            coinPickupSource.pitch = Random.Range(1.2f, 1.4f);
-            coinPickupSource.Play();
-
-            if(hasItem[4])
-            {
-                World.coins += 2;
-            } 
-            else
-            {
-                World.coins++;
-            }
-            
-            uiUpdater.UpdateCoins();
+            spriteRenderer.color = hurtColor;
+            StartCoroutine("WaitForInvincibility");
         }
     }
+
+    public void UpdateHealth()
+    {
+        uiUpdater.UpdateHealthbar(currentHealth, maxHealth);
+    }
+
+    public bool[] GetItems()
+    {
+        return hasItem;
+    }
+
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public float GetMaxHealth()
+    {
+        return maxHealth;
+    }
+
+    public void SetCurrentHealth(float val)
+    {
+        currentHealth = val;
+    }
+
+    private IEnumerator WaitForInvincibility()
+    {
+        yield return new WaitForSeconds(invincibleModeTime);
+        canHurt = true;
+    }
+
+    private IEnumerator WaitForClick()
+    {
+        CreateProjectile();
+        yield return new WaitForSeconds(projClickDelay);
+        canClick = true;
+    }
+    
+    private IEnumerator WaitForColor()
+    {
+        yield return new WaitForSeconds(hurtTime * 2f);
+        spriteRenderer.color = Color.white;
+        canChangeColor = true;
+    }
+
+    private IEnumerator WaitForFootsteps()
+    {
+        yield return new WaitForSeconds(footstepTime);
+        canStep = true;
+    }
+    
 }
-
-

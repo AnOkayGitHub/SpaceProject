@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.Universal;
+using UnityEngine.UI;
 
 public static class World
 {
@@ -19,4 +22,14 @@ public static class World
     public static bool currentRoomCleared = false;
     public static Level levelManager;
     public static Vector2 startLocation;
+    public static Image bossHealthbar;
+    public static TextMeshProUGUI bossName;
+    public static GameObject bossHUD;
+    public static Light2D globalLight;
+    public static string[] bossNames = new string[] { "Bionic Transportation Cyborg",
+                                                    "Universal Expedition Droid",
+                                                    "Highpowered Automaton",
+                                                    "Robotic Travel Juggernaut",
+                                                    "Nullification Golem",
+                                                    "00111110 00111010 00101001" };
 }

@@ -127,7 +127,8 @@ MonoBehaviour:
   propDestroyPS: {fileID: 7796001184398024362, guid: 7a807f269cc298d429d833a071e30adb, type: 3}
   destroySpawn: {fileID: 4420203660601009678}
   audioSource: {fileID: 0}
-  damage: 60
+  friendly: 1
+  upgraded: 0
 --- !u!50 &3817272296126488312
 Rigidbody2D:
   serializedVersion: 4

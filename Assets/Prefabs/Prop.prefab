@@ -57,6 +57,8 @@ MonoBehaviour:
   destroyChance: 30
   coinPrefab: {fileID: 6227025651975922410, guid: ee549835c6cbb2045a53384a0a80fcef, type: 3}
   coinAmount: 3
+  hpPercent: 50
+  hpPrefab: {fileID: 6227025651975922410, guid: f25443c05d0a46741ba664f309108ab6, type: 3}
 --- !u!61 &316631435992777886
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -95,9 +97,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 10
-  m_LinearDrag: 4
-  m_AngularDrag: 4
+  m_Mass: 8
+  m_LinearDrag: 50
+  m_AngularDrag: 50
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
@@ -167,7 +169,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: b9aa865d3dcdee545a3cc1b76e7409a2, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.01
+  m_Volume: 0.03
   m_Pitch: 1
   Loop: 0
   Mute: 0

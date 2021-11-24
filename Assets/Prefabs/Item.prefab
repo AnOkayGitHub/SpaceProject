@@ -204,10 +204,18 @@ MonoBehaviour:
   - {fileID: -6179614275229353623, guid: f5fb689e659bfdc448f66515c8eb9dd7, type: 3}
   - {fileID: -1823535908205110754, guid: a4781befa97cafb4b98a24a535d9e376, type: 3}
   names:
-  - Mystery Vaccine
+  - Vaccine
   - NVG
   - Bionic Peg Leg
   - Suit Upgrade
   - Alien Tech
   - Tesla Coil
   - Armor
+  descs:
+  - Worth a shot. Your health regenerates over time.
+  - I hope you like green. Visibility greatly increased.
+  - Nice. Speed upgrade.
+  - Ya feelin lucky, player? Increased damage.
+  - You feel rejuvenated. Lifesteal.
+  - Innovative. Projectiles up, but damage down.
+  - Use in case of emergency. Increased MAXHP.

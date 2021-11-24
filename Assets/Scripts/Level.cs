@@ -1,12 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.Universal;
 
 public class Level : MonoBehaviour
 {
+    [SerializeField] private GameObject[] roomPrefabs;
+    [SerializeField] private GameObject[] itemRoomPrefabs;
+    [SerializeField] private GameObject bossRoomPrefab;
+    [SerializeField] private GameObject transitionRoomPrefab;
+    [SerializeField] private Transform roomHolder;
+    [SerializeField] private Animator scanner;
+    [SerializeField] private Animator introAnimator;
+    [SerializeField] private UpdateUI uiUpdater;
+    [SerializeField] private Light2D globalLight;
     [SerializeField] private int roomSize = 7;
     [SerializeField] private int gridSize = 10;
     [SerializeField] private int bossLevel = 5;
+    [SerializeField] private int maxRooms = 15;
+    [SerializeField] private float timeBetweenScans = 4f;
+    [SerializeField] private float introMovieTime;
+    [SerializeField] private float timeBetweenRoomCreation;
+    [SerializeField] private float timeBeforeGeneration = 2f;
+    [SerializeField] private bool waitForGenToHide = false;
+    [SerializeField] private bool doIntroMovie = true;
+    
     private Dictionary<Vector2, bool> grid = new Dictionary<Vector2, bool>();
     private List<Vector2> occupiedCells = new List<Vector2>();
     private List<Vector2> totalOpenNeighbors = new List<Vector2>();
@@ -14,36 +32,15 @@ public class Level : MonoBehaviour
     private int roomsSpawned = 5;
     private int itemRooms;
 
-    [SerializeField] private int maxRooms = 15;
-    [SerializeField] private GameObject[] roomPrefabs;
-    [SerializeField] private GameObject[] itemRoomPrefabs;
-    [SerializeField] private GameObject bossRoomPrefab;
-    [SerializeField] private GameObject transitionRoomPrefab;
-    [SerializeField] private Transform roomHolder;
-    [SerializeField] private float timeBetweenRoomCreation;
-    [SerializeField] private float timeBeforeGeneration = 2f;
-    [SerializeField] private bool waitForGenToHide = false;
-    [SerializeField] private bool doIntroMovie = true;
-    [SerializeField] private Animator scanner;
-    [SerializeField] private Animator introAnimator;
-    [SerializeField] private float timeBetweenScans = 4f;
-    [SerializeField] private float introMovieTime;
-    [SerializeField] private UpdateUI uiUpdater;
-
     private void Start()
     {
-
-        if(World.levelManager == null)
-        {
-            World.levelManager = this;
-        }
-
-        if(World.mainCam == null)
-        {
-            World.mainCam = Camera.main.gameObject;
-        }
-
+        UpdateWorldData();
         Create();
+    }
+
+    public Dictionary<Vector2, bool> GetGrid()
+    {
+        return grid;
     }
 
     public void Create()
@@ -64,7 +61,7 @@ public class Level : MonoBehaviour
 
         for (int i = 0; i < transform.childCount; i++)
         {
-            if(i > 4)
+            if (i > 4)
             {
                 Destroy(transform.GetChild(i).gameObject);
             }
@@ -80,15 +77,22 @@ public class Level : MonoBehaviour
         StartCoroutine("Scan");
     }
 
-    private IEnumerator WaitForGeneration()
+    private void UpdateWorldData()
     {
-        yield return new WaitForSeconds(timeBeforeGeneration);
-        StartGeneration();
-    }
+        if (World.levelManager == null)
+        {
+            World.levelManager = this;
+        }
 
-    public Dictionary<Vector2, bool> GetGrid()
-    {
-        return grid;
+        if (World.mainCam == null)
+        {
+            World.mainCam = Camera.main.gameObject;
+        }
+
+        if (World.globalLight == null)
+        {
+            World.globalLight = globalLight;
+        }
     }
 
     private void StartGeneration()
@@ -137,6 +141,37 @@ public class Level : MonoBehaviour
                 totalOpenNeighbors.Add(neighbor);
             }
         }
+    }
+
+    private List<Vector2> CheckNeighbors(Vector2 currentPos)
+    {
+        // Check up, down, left, right for neighbors and add them to a list, then return that list
+        List<Vector2> openNeighbors = new List<Vector2>();
+
+        for (int x = (int) currentPos.x - roomSize; x <= currentPos.x + roomSize; x += roomSize)
+        {
+            for (int y = (int) currentPos.y - roomSize; y <= currentPos.y + roomSize; y += roomSize)
+            {
+                if ((x == currentPos.x || y == currentPos.y))
+                {
+                    Vector2 pos = new Vector2(x, y);
+                    if(pos != currentPos && !occupiedCells.Contains(pos))
+                    {
+                        if(pos.x < (gridSize / 2) * roomSize && pos.x > (-gridSize / 2) * roomSize && pos.y < (gridSize / 2) * roomSize && pos.y > (-gridSize / 2) * roomSize)
+                        {
+                            if (!grid[pos])
+                            {
+                                openNeighbors.Add(pos);
+                            }
+                        }
+                        
+                    }
+                    
+                }
+            }
+        }
+
+        return openNeighbors;
     }
 
     private IEnumerator SpawnRooms()
@@ -229,38 +264,7 @@ public class Level : MonoBehaviour
 
         StartCoroutine("WaitForPlay");
     }
-
-    private List<Vector2> CheckNeighbors(Vector2 currentPos)
-    {
-        // Check up, down, left, right for neighbors and add them to a list, then return that list
-        List<Vector2> openNeighbors = new List<Vector2>();
-
-        for (int x = (int) currentPos.x - roomSize; x <= currentPos.x + roomSize; x += roomSize)
-        {
-            for (int y = (int) currentPos.y - roomSize; y <= currentPos.y + roomSize; y += roomSize)
-            {
-                if ((x == currentPos.x || y == currentPos.y))
-                {
-                    Vector2 pos = new Vector2(x, y);
-                    if(pos != currentPos && !occupiedCells.Contains(pos))
-                    {
-                        if(pos.x < (gridSize / 2) * roomSize && pos.x > (-gridSize / 2) * roomSize && pos.y < (gridSize / 2) * roomSize && pos.y > (-gridSize / 2) * roomSize)
-                        {
-                            if (!grid[pos])
-                            {
-                                openNeighbors.Add(pos);
-                            }
-                        }
-                        
-                    }
-                    
-                }
-            }
-        }
-
-        return openNeighbors;
-    }
-
+    
     private IEnumerator Scan()
     {
         yield return new WaitForSeconds(timeBetweenScans);
@@ -269,7 +273,7 @@ public class Level : MonoBehaviour
 
         StartCoroutine("Scan");
     }
-
+    
     private IEnumerator WaitForPlay()
     {
         if(doIntroMovie)
@@ -281,4 +285,9 @@ public class Level : MonoBehaviour
         World.readyToPlay = true;
     }
 
+    private IEnumerator WaitForGeneration()
+    {
+        yield return new WaitForSeconds(timeBeforeGeneration);
+        StartGeneration();
+    }
 }

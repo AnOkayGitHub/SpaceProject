@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Room : MonoBehaviour
 {
+    [SerializeField] private GameObject[] enemySpawnPoints;
+    private GameObject toHide;
     private Animator animator;
     private Animator doorAnimator;
     private AudioSource doorOpenSource;
     private Transform[] doors;
+    private int enemyCount = 0;
     private bool[] neighbors = new bool[] { false, false, false, false };
     private bool done = false;
     private bool doorsDone = false;
@@ -15,17 +18,14 @@ public class Room : MonoBehaviour
     private bool doorsOpened = false;
     private bool enemiesSpawned = false;
     private bool canCheckCleared = false;
-    private int enemyCount = 0;
-    private GameObject toHide;
-
-    [SerializeField] private GameObject[] enemySpawnPoints;
-
+    
     void Start()
     {
-        doors = new Transform[] { transform.GetChild(0).GetChild(0).GetChild(0), transform.GetChild(0).GetChild(1).GetChild(0), transform.GetChild(0).GetChild(2).GetChild(0), transform.GetChild(0).GetChild(3).GetChild(0) };
-        animator = GetComponent<Animator>();
-        doorAnimator = transform.GetChild(0).gameObject.GetComponent<Animator>();
         doorOpenSource = GetComponent<AudioSource>();
+        animator = GetComponent<Animator>();
+
+        doors = new Transform[] { transform.GetChild(0).GetChild(0).GetChild(0), transform.GetChild(0).GetChild(1).GetChild(0), transform.GetChild(0).GetChild(2).GetChild(0), transform.GetChild(0).GetChild(3).GetChild(0) };
+        doorAnimator = transform.GetChild(0).gameObject.GetComponent<Animator>();
 
         if (gameObject.name == "StartingRoom")
         {
@@ -35,43 +35,6 @@ public class Room : MonoBehaviour
         {
             toHide = transform.GetChild(6).gameObject;
             toHide.gameObject.SetActive(false);
-        }
-    }
-
-    public void Reset()
-    {
-        if(World.level > 1)
-        {
-            doorAnimator.Play("DoorsClose");
-        }
-        
-
-        if (gameObject.name == "StartingRoom")
-        {
-            cleared = true;
-        }
-        else
-        {
-            if (gameObject.name.Contains("Boss Room(Clone)"))
-            {
-                toHide = transform.GetChild(6).gameObject;
-                toHide.gameObject.SetActive(false);
-            }
-
-            cleared = false;
-        }
-        neighbors = new bool[] { false, false, false, false };
-        done = false;
-        doorsDone = false;
-
-        doorsOpened = false;
-        enemiesSpawned = false;
-        canCheckCleared = false;
-        enemyCount = 0;
-
-        for (int i = 0; i < 4; i++)
-        {
-            doors[i].gameObject.SetActive(true);
         }
     }
 
@@ -120,29 +83,6 @@ public class Room : MonoBehaviour
                     doorsDone = true;
                 }
             }
-        }
-    }
-
-    private void GetNeighbors()
-    {
-        for(int i = 0; i < 4; i++)
-        {
-            Collider2D[] collisions = Physics2D.OverlapCircleAll(doors[i].parent.transform.position, 1f);
-            if(collisions.Length > 0)
-            {
-                foreach(Collider2D collider in collisions)
-                {
-                    if ((collider.gameObject.tag == "Occupied Cell" || collider.gameObject.tag == "StartingRoom") && collider.gameObject != gameObject) 
-                    {
-                        neighbors[i] = true;
-                    }
-                }
-            }
-        }
-
-        for (int i = 0; i < 4; i++)
-        {
-            doors[i].gameObject.SetActive(neighbors[i]);
         }
     }
 
@@ -212,6 +152,66 @@ public class Room : MonoBehaviour
     private Transform[] GetDoors()
     {
         return doors;
+    }
+
+    private void GetNeighbors()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            Collider2D[] collisions = Physics2D.OverlapCircleAll(doors[i].parent.transform.position, 1f);
+            if (collisions.Length > 0)
+            {
+                foreach (Collider2D collider in collisions)
+                {
+                    if ((collider.gameObject.tag == "Occupied Cell" || collider.gameObject.tag == "StartingRoom") && collider.gameObject != gameObject)
+                    {
+                        neighbors[i] = true;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            doors[i].gameObject.SetActive(neighbors[i]);
+        }
+    }
+
+    public void Reset()
+    {
+        if (World.level > 1)
+        {
+            doorAnimator.Play("DoorsClose");
+        }
+
+
+        if (gameObject.name == "StartingRoom")
+        {
+            cleared = true;
+        }
+        else
+        {
+            if (gameObject.name.Contains("Boss Room(Clone)"))
+            {
+                toHide = transform.GetChild(6).gameObject;
+                toHide.gameObject.SetActive(false);
+            }
+
+            cleared = false;
+        }
+        neighbors = new bool[] { false, false, false, false };
+        done = false;
+        doorsDone = false;
+
+        doorsOpened = false;
+        enemiesSpawned = false;
+        canCheckCleared = false;
+        enemyCount = 0;
+
+        for (int i = 0; i < 4; i++)
+        {
+            doors[i].gameObject.SetActive(true);
+        }
     }
 
     private void DoEnemySpawn()
