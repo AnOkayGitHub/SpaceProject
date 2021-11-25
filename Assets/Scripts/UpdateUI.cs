@@ -10,10 +10,13 @@ public class UpdateUI : MonoBehaviour
     [SerializeField] private Transform itemHolder;
     [SerializeField] private GameObject itemPrefab;
     [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private TextMeshProUGUI playerHPText;
+    [SerializeField] private TextMeshProUGUI bossHPText;
     [SerializeField] private Image bossHealthbar;
     [SerializeField] private Image playerHealthbar;
     [SerializeField] private TextMeshProUGUI bossName;
     [SerializeField] private GameObject bossHUD;
+    [SerializeField] private GameObject shopHUD;
 
     private void Start()
     {
@@ -36,11 +39,17 @@ public class UpdateUI : MonoBehaviour
         {
             World.bossHUD = bossHUD;
         }
+
+        if(World.bossHP == null)
+        {
+            World.bossHP = bossHPText;
+        }
     }
 
     public void UpdateHealthbar(float current, float max)
     {
         playerHealthbar.fillAmount = current / max;
+        playerHPText.text = current.ToString("0") + "/" + max.ToString("0");
     }
 
     public Image GetPlayerHealthbar()
@@ -56,6 +65,11 @@ public class UpdateUI : MonoBehaviour
     public void UpdateLevel()
     {
         levelText.text = "Floor " + World.level.ToString();
+    }
+
+    public void ToggleShopHud()
+    {
+        shopHUD.gameObject.SetActive(!shopHUD.activeSelf);
     }
 
     public void UpdateItems(string t, Sprite s, string d)

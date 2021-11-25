@@ -8,6 +8,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject destroyPrefab;
     [SerializeField] private Animator animator;
     [SerializeField] private Sprite[] emotes;
+    [SerializeField] private AudioSource attackSource;
+    [SerializeField] private AudioSource attackSource2;
     [SerializeField] private Color hurtColor;
     [SerializeField] private int bossAttackIndex = -1;
     [SerializeField] private float moveSpeed;
@@ -124,6 +126,9 @@ public class Enemy : MonoBehaviour
     {
         if(canAttack)
         {
+            attackSource.pitch = Random.Range(1.01f, 1.3f);
+            attackSource.Play();
+
             canAttack = false;
             Vector3 pos = transform.position;
             Vector3 dir = World.player.transform.position - pos;
@@ -199,6 +204,7 @@ public class Enemy : MonoBehaviour
                     proj7.transform.rotation = Quaternion.AngleAxis(angle + 45f, Vector3.forward);
                     proj7.GetComponent<Projectile>().SetLifetime(attackLifetime);
 
+                    attackSource2.Play();
                 }
             }
 
@@ -229,6 +235,7 @@ public class Enemy : MonoBehaviour
             World.bossName.text = World.bossNames[UnityEngine.Random.Range(0, World.bossNames.Length)];
         }
         World.bossHealthbar.fillAmount = (currentHealth / maxHealth);
+        World.bossHP.text = currentHealth.ToString() + "/" + maxHealth.ToString();
     }
 
     private void Follow()
@@ -348,16 +355,22 @@ public class Enemy : MonoBehaviour
     {
         if (!hasDestroyed)
         {
-            if(isBoss)
-            {
-                World.bossHUD.SetActive(false);
-            }
+            
 
             GameObject destroyPS = (GameObject)Instantiate(destroyPrefab);
             destroyPS.transform.position = transform.position;
             destroyPS.gameObject.GetComponent<AudioSource>().pitch += Random.Range(-0.02f, 0.02f);
             float newScale = Random.Range(transform.localScale.x - 0.5f, transform.localScale.x + 0.5f);
-            destroyPS.transform.localScale = new Vector3(newScale, newScale, newScale);
+            
+            if (isBoss)
+            {
+                World.bossHUD.SetActive(false);
+            }
+            else
+            {
+                destroyPS.transform.localScale = new Vector3(newScale, newScale, newScale);
+            }
+
 
             hasDestroyed = true;
             Destroy(destroyPS, 2f);
@@ -396,7 +409,6 @@ public class Enemy : MonoBehaviour
 
     public void Hurt(float damage)
     {
-        Debug.Log("currentHealth = " + currentHealth.ToString());
         currentHealth -= damage;
         gfx.color = hurtColor;
     }
@@ -405,7 +417,6 @@ public class Enemy : MonoBehaviour
     {
         isBoss = status;
     }
-
 
     private IEnumerator WakeUp()
     {

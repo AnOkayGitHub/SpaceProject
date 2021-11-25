@@ -24,6 +24,7 @@ public static class World
     public static Vector2 startLocation;
     public static Image bossHealthbar;
     public static TextMeshProUGUI bossName;
+    public static TextMeshProUGUI bossHP;
     public static GameObject bossHUD;
     public static Light2D globalLight;
     public static string[] bossNames = new string[] { "Bionic Transportation Cyborg",

@@ -8,14 +8,21 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private GameObject emoteObj;
     [SerializeField] private Animator animator;
     [SerializeField] private AudioSource projSource;
     [SerializeField] private AudioSource footstepSource;
     [SerializeField] private AudioSource doorPassSource;
     [SerializeField] private AudioSource itemPickupSource;
+    [SerializeField] private AudioSource hurtAudioSource;
+    [SerializeField] private AudioSource buyAudioSource;
+    [SerializeField] private AudioSource interactAudioSource;
+    [SerializeField] private AudioSource ladderClimbSource;
     [SerializeField] private Transform projSpawn;
     [SerializeField] private UpdateUI uiUpdater;
     [SerializeField] private SpriteRenderer gfx;
+    [SerializeField] private SpriteRenderer emoteRenderer;
+    [SerializeField] private Sprite[] emotes;
     [SerializeField] private VolumeProfile volumeProfile;
     [SerializeField] private Color hurtColor;
     [SerializeField] private Color boosterColor;
@@ -32,9 +39,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float invincibleModeTime = 0.5f;
     [SerializeField] private float maxHealth = 100;
     [SerializeField] private float damage;
+    [SerializeField] private float emoteTimer = 2f;
     
     private GameObject doorTouching;
     private GameObject interactableTouching;
+    private GameObject shopTouching;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private ColorAdjustments colorAdjustment;
@@ -43,6 +52,7 @@ public class PlayerController : MonoBehaviour
     private float currentHealth;
     private float pegLegSpeed;
     private float boosterClickDelay;
+    private float currentEmoteTimer = 0;
     private int facingX;
     private int facingY;
     private bool canHurt = true;
@@ -51,12 +61,15 @@ public class PlayerController : MonoBehaviour
     private bool canStep = true;
     private bool canChangeColor = true;
     private bool[] hasItem = new bool[] { false, false, false, false, false, false, false };
+    private bool isBusy = false;
     
     private void Start()
     {
         currentHealth = maxHealth;
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        uiUpdater.UpdateCoins();
+
         if (World.player == null)
         {
             World.player = gameObject;
@@ -75,14 +88,15 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         UpdateItemEffects();
+        UpdateEmote();
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-
 
         if (World.readyToPlay)
         {
             GetInput();
             DetectDoors();
             DetectTransition();
+            DetectShop();
             GetFacing();
 
             if (isMoving && canStep)
@@ -138,9 +152,6 @@ public class PlayerController : MonoBehaviour
             }
 
             UpdateItemEffects();
-
-
-
         }
         else if (collider.gameObject.tag == "Coin")
         {
@@ -207,6 +218,39 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void UpdateEmote()
+    {
+        currentEmoteTimer = Mathf.Clamp(currentEmoteTimer, 0, emoteTimer);
+
+        if(!World.currentRoom.cleared && emoteRenderer.sprite == emotes[0])
+        {
+            emoteRenderer.sprite = null;
+        }
+
+        if ((doorTouching != null || interactableTouching != null || shopTouching != null) && currentEmoteTimer <= 0 && !isBusy)
+        {
+            if(doorTouching != null)
+            {
+                if (doorTouching.transform.GetChild(0).gameObject.activeSelf && World.currentRoom.cleared)
+                {
+                    emoteRenderer.sprite = emotes[0];
+                }
+            }
+            else
+            {
+                emoteRenderer.sprite = emotes[0];
+            }
+        }
+        else if(currentEmoteTimer != 0)
+        {
+            currentEmoteTimer -= Time.deltaTime;
+        }
+        else
+        {
+            emoteRenderer.sprite = null;
+        }
+    }
+
     private void GetFacing()
     {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -240,10 +284,12 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        animator.SetFloat("X", facingX);
-        animator.SetFloat("Y", facingY);
-
-
+        if(!isBusy)
+        {
+            animator.SetFloat("X", facingX);
+            animator.SetFloat("Y", facingY);
+        }
+        
     }
 
     private void DetectDoors()
@@ -284,42 +330,70 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void DetectShop()
+    {
+        Collider2D[] found = Physics2D.OverlapCircleAll(transform.position, 0.6f);
+
+
+        foreach (Collider2D col in found)
+        {
+            if (col.gameObject.tag == "Shop")
+            {
+                shopTouching = col.gameObject;
+                break;
+            }
+            else
+            {
+                shopTouching = null;
+            }
+        }
+    }
+
     private void GetInput()
     {
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+        if(!isBusy)
         {
-            if (Input.GetKey(KeyCode.W))
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
             {
-                movement.y = 1;
+                if (Input.GetKey(KeyCode.W))
+                {
+                    movement.y = 1;
+                }
+
+                if (Input.GetKey(KeyCode.S))
+                {
+                    movement.y = -1;
+                }
+            }
+            else
+            {
+                movement.y = 0;
             }
 
-            if (Input.GetKey(KeyCode.S))
+
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
             {
-                movement.y = -1;
+                if (Input.GetKey(KeyCode.D))
+                {
+                    movement.x = 1;
+                }
+
+                if (Input.GetKey(KeyCode.A))
+                {
+                    movement.x = -1;
+                }
             }
-        }
-        else
-        {
-            movement.y = 0;
-        }
-
-
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
-        {
-            if (Input.GetKey(KeyCode.D))
+            else
             {
-                movement.x = 1;
-            }
-
-            if (Input.GetKey(KeyCode.A))
-            {
-                movement.x = -1;
+                movement.x = 0;
             }
         }
         else
         {
             movement.x = 0;
+            movement.y = 0;
         }
+       
 
         if (Input.GetKeyDown(KeyCode.E) && World.currentRoom.cleared)
         {
@@ -343,11 +417,28 @@ public class PlayerController : MonoBehaviour
                 World.level ++;
                 World.levelManager.Create();
                 transform.position = World.startLocation;
-                
+                ladderClimbSource.Play();
+
             }
+            else if(shopTouching != null && !isBusy)
+            {
+                uiUpdater.ToggleShopHud();
+                isBusy = true;
+                interactAudioSource.pitch = 1f;
+                interactAudioSource.Play();
+                return;
+            }
+        } 
+        
+        if((Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.E)) && isBusy)
+        {
+            isBusy = false;
+            interactAudioSource.pitch = 0.8f;
+            interactAudioSource.Play();
+            uiUpdater.ToggleShopHud();
         }
 
-        if(Input.GetMouseButton(0) && canClick)
+        if(Input.GetMouseButton(0) && canClick && !isBusy)
         {
             canClick = false;
             projSource.pitch = Random.Range(0.9f, 1.2f);
@@ -428,6 +519,8 @@ public class PlayerController : MonoBehaviour
     {
         if (canHurt)
         {
+            hurtAudioSource.Play();
+
             canHurt = false;
             currentHealth -= damage;
             UpdateHealth();
@@ -462,6 +555,11 @@ public class PlayerController : MonoBehaviour
         currentHealth = val;
     }
 
+    public bool GetIsBusy()
+    {
+        return isBusy;
+    }
+
     private IEnumerator WaitForInvincibility()
     {
         yield return new WaitForSeconds(invincibleModeTime);
@@ -487,5 +585,93 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(footstepTime);
         canStep = true;
     }
-    
+
+    public void BuyDamage(int cost)
+    {
+        if(World.coins >= cost)
+        {
+            damage += 15;
+            upgradedDamage += 15;
+            World.coins -= cost;
+            buyAudioSource.pitch = 1f;
+            buyAudioSource.Play();
+            uiUpdater.UpdateCoins();
+            emoteRenderer.sprite = emotes[1];
+            currentEmoteTimer = emoteTimer;
+        }
+        else
+        {
+            buyAudioSource.pitch = 0.5f;
+            buyAudioSource.Play();
+            emoteRenderer.sprite = emotes[2];
+            currentEmoteTimer = emoteTimer;
+        }
+    }
+
+    public void BuyMaxHP(int cost)
+    {
+        if (World.coins >= cost)
+        {
+            maxHealth += 10;
+            currentHealth += 10;
+            World.coins -= cost;
+            buyAudioSource.pitch = 1f;
+            buyAudioSource.Play();
+            uiUpdater.UpdateCoins();
+            uiUpdater.UpdateHealthbar(currentHealth, maxHealth);
+            emoteRenderer.sprite = emotes[1];
+            currentEmoteTimer = emoteTimer;
+        }
+        else
+        {
+            buyAudioSource.pitch = 0.5f;
+            buyAudioSource.Play();
+            emoteRenderer.sprite = emotes[2];
+            currentEmoteTimer = emoteTimer;
+        }
+    }
+
+    public void BuySpeed(int cost)
+    {
+        if (World.coins >= cost)
+        {
+            speed += 1;
+            World.coins -= cost;
+            buyAudioSource.pitch = 1f;
+            buyAudioSource.Play();
+            uiUpdater.UpdateCoins();
+            emoteRenderer.sprite = emotes[1];
+            currentEmoteTimer = emoteTimer;
+        }
+        else
+        {
+            buyAudioSource.pitch = 0.5f;
+            buyAudioSource.Play();
+            emoteRenderer.sprite = emotes[2];
+            currentEmoteTimer = emoteTimer;
+        }
+    }
+
+    public void BuyHealth(int cost)
+    {
+        if (World.coins >= cost && currentHealth <= (maxHealth - (currentHealth * 0.2f)))
+        {
+            currentHealth += (currentHealth * 0.2f);
+            World.coins -= cost;
+            buyAudioSource.pitch = 1f;
+            buyAudioSource.Play();
+            uiUpdater.UpdateCoins();
+            uiUpdater.UpdateHealthbar(currentHealth, maxHealth);
+            emoteRenderer.sprite = emotes[1];
+            currentEmoteTimer = emoteTimer;
+        }
+        else
+        {
+            buyAudioSource.pitch = 0.5f;
+            buyAudioSource.Play();
+            emoteRenderer.sprite = emotes[2];
+            currentEmoteTimer = emoteTimer;
+        }
+    }
+
 }

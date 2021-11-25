@@ -13,11 +13,12 @@ TagManager:
   - Coin
   - Transition
   - HP
+  - Shop
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - CamLight
   - Water
   - UI
   - Minimap
@@ -29,7 +30,7 @@ TagManager:
   - Enemy
   - Destroy
   - EnemyProjectile
-  - 
+  - NPC
   - 
   - 
   - 

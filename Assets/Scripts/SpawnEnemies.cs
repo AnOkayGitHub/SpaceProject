@@ -5,8 +5,8 @@ using UnityEngine;
 public class SpawnEnemies : MonoBehaviour
 {
     [SerializeField] private GameObject[] enemyPrefabs;
-    [SerializeField] private int enemiesToSpawn;
     [SerializeField] private GameObject spawnPS;
+    [SerializeField] private int enemiesToSpawn;
     [SerializeField] private bool spawnBoss = false;
 
     public int enemiesSpawned = 0;
