@@ -57,7 +57,7 @@ MonoBehaviour:
   destroyChance: 30
   coinPrefab: {fileID: 6227025651975922410, guid: ee549835c6cbb2045a53384a0a80fcef, type: 3}
   coinAmount: 3
-  hpPercent: 50
+  hpPercent: 25
   hpPrefab: {fileID: 6227025651975922410, guid: f25443c05d0a46741ba664f309108ab6, type: 3}
 --- !u!61 &316631435992777886
 BoxCollider2D:

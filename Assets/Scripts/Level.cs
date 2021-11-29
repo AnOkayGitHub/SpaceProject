@@ -35,7 +35,7 @@ public class Level : MonoBehaviour
     private void Start()
     {
         UpdateWorldData();
-        Create();
+        Initialize();
     }
 
     public Dictionary<Vector2, bool> GetGrid()
@@ -43,7 +43,7 @@ public class Level : MonoBehaviour
         return grid;
     }
 
-    public void Create()
+    public void Initialize()
     {
         World.readyToPlay = false;
         roomsSpawned = 5;
@@ -97,6 +97,7 @@ public class Level : MonoBehaviour
 
     private void StartGeneration()
     {
+        World.readyForDoors = false;
         // Start at the top left corner and make all cells empty
         int halfway = (gridSize / 2) * roomSize;
 
@@ -276,7 +277,8 @@ public class Level : MonoBehaviour
     
     private IEnumerator WaitForPlay()
     {
-        if(doIntroMovie)
+        World.readyForDoors = true;
+        if (doIntroMovie)
         {
             introAnimator.Play("HUD Init", -1, 0f);
             yield return new WaitForSeconds(introMovieTime);

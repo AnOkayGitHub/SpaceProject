@@ -57,7 +57,7 @@ public class Room : MonoBehaviour
             }
         }
 
-        if(!done)
+        if(!done && World.readyForDoors)
         {
             if (gameObject.tag != "StartingRoom")
             {

@@ -173,7 +173,7 @@ public class PlayerController : MonoBehaviour
             collider.gameObject.GetComponent<CircleCollider2D>().enabled = false;
             hpAudioSource.pitch = Random.Range(1.2f, 1.4f);
             hpAudioSource.Play();
-            currentHealth += 15f;
+            currentHealth += maxHealth * 0.15f;
             UpdateHealth();
         }
     }
@@ -210,7 +210,6 @@ public class PlayerController : MonoBehaviour
                 case "Armor":
                     hasItem[6] = true;
                     uiUpdater.GetPlayerHealthbar().color = armorColor;
-                    gfx.color = armorColor;
                     maxHealth = 200;
                     currentHealth = maxHealth;
                     break;
@@ -415,7 +414,7 @@ public class PlayerController : MonoBehaviour
                 }
 
                 World.level ++;
-                World.levelManager.Create();
+                World.levelManager.Initialize();
                 transform.position = World.startLocation;
                 ladderClimbSource.Play();
 
@@ -532,6 +531,11 @@ public class PlayerController : MonoBehaviour
 
     public void UpdateHealth()
     {
+        if(currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+
         uiUpdater.UpdateHealthbar(currentHealth, maxHealth);
     }
 
@@ -590,8 +594,8 @@ public class PlayerController : MonoBehaviour
     {
         if(World.coins >= cost)
         {
-            damage += 15;
-            upgradedDamage += 15;
+            damage += 5;
+            upgradedDamage += 8;
             World.coins -= cost;
             buyAudioSource.pitch = 1f;
             buyAudioSource.Play();
@@ -635,9 +639,9 @@ public class PlayerController : MonoBehaviour
     {
         if (World.coins >= cost)
         {
-            speed += 1;
+            speed += 0.15f;
             World.coins -= cost;
-            buyAudioSource.pitch = 1f;
+            buyAudioSource.pitch = 0.15f;
             buyAudioSource.Play();
             uiUpdater.UpdateCoins();
             emoteRenderer.sprite = emotes[1];
@@ -652,11 +656,76 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void BuyClickDelay(int cost)
+    {
+        if (World.coins >= cost)
+        {
+            projClickDelay -= 0.1f;
+            World.coins -= cost;
+            buyAudioSource.pitch = 0.15f;
+            buyAudioSource.Play();
+            uiUpdater.UpdateCoins();
+            emoteRenderer.sprite = emotes[1];
+            currentEmoteTimer = emoteTimer;
+        }
+        else
+        {
+            buyAudioSource.pitch = 0.5f;
+            buyAudioSource.Play();
+            emoteRenderer.sprite = emotes[2];
+            currentEmoteTimer = emoteTimer;
+        }
+    }
+
+    public void BuyProjRange(int cost)
+    {
+        if (World.coins >= cost)
+        {
+            projDestroyTime += 0.25f;
+            World.coins -= cost;
+            buyAudioSource.pitch = 0.15f;
+            buyAudioSource.Play();
+            uiUpdater.UpdateCoins();
+            emoteRenderer.sprite = emotes[1];
+            currentEmoteTimer = emoteTimer;
+        }
+        else
+        {
+            buyAudioSource.pitch = 0.5f;
+            buyAudioSource.Play();
+            emoteRenderer.sprite = emotes[2];
+            currentEmoteTimer = emoteTimer;
+        }
+    }
+
+    public void BuyGracePeriod(int cost)
+    {
+        if (World.coins >= cost)
+        {
+            invincibleModeTime += 0.2f;
+            World.coins -= cost;
+            buyAudioSource.pitch = 0.15f;
+            buyAudioSource.Play();
+            uiUpdater.UpdateCoins();
+            emoteRenderer.sprite = emotes[1];
+            currentEmoteTimer = emoteTimer;
+        }
+        else
+        {
+            buyAudioSource.pitch = 0.5f;
+            buyAudioSource.Play();
+            emoteRenderer.sprite = emotes[2];
+            currentEmoteTimer = emoteTimer;
+        }
+    }
+
+
+
     public void BuyHealth(int cost)
     {
         if (World.coins >= cost && currentHealth <= (maxHealth - (currentHealth * 0.2f)))
         {
-            currentHealth += (currentHealth * 0.2f);
+            currentHealth += (maxHealth * 0.25f);
             World.coins -= cost;
             buyAudioSource.pitch = 1f;
             buyAudioSource.Play();

@@ -23,7 +23,6 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float originalSpeed;
     [SerializeField] private float maxHealth;
     [SerializeField] private float hurtTime;
-    
 
     private EnemyState currentState;
     private Vector2 target;

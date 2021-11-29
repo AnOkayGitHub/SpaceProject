@@ -410,12 +410,12 @@ MonoBehaviour:
   hurtColor: {r: 1, g: 0, b: 0, a: 1}
   bossAttackIndex: -1
   moveSpeed: 20
-  searchRadius: 8
-  attackRadius: 5
-  randomMoveDelay: 3
+  searchRadius: 4.5
+  attackRadius: 3
+  randomMoveDelay: 1.5
   sleepTime: 1
-  attackTimer: 2
-  damage: 20
+  attackTimer: 1
+  damage: 15
   attackLifetime: 5
   originalSpeed: 0
   maxHealth: 75

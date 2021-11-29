@@ -20,6 +20,7 @@ public static class World
     public static Room currentRoom;
     public static int currentEnemyCount = 999;
     public static bool currentRoomCleared = false;
+    public static bool readyForDoors = false;
     public static Level levelManager;
     public static Vector2 startLocation;
     public static Image bossHealthbar;

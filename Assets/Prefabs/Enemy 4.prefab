@@ -1,5 +1,87 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2497219483451214898
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4469450101177464526}
+  - component: {fileID: 5404683571671381148}
+  m_Layer: 12
+  m_Name: Emote
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4469450101177464526
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2497219483451214898}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.050000012, y: 1.8, z: 0}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3127193822731794600}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &5404683571671381148
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2497219483451214898}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -1874014279
+  m_SortingLayer: 4
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: b2314d51ee408d747a5f5adfe28cb42a, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &3297407117408484081
 GameObject:
   m_ObjectHideFlags: 0
@@ -27,7 +109,7 @@ Transform:
   m_GameObject: {fileID: 3297407117408484081}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.2, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 3127193822731794600}
   m_RootOrder: 0
@@ -73,7 +155,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -4748146012517077659, guid: e460060b6bf327547a0d97f2a0e08ad0, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.3820755, b: 0.3820755, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -102,7 +184,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!1 &6347843765855616301
+--- !u!1 &3806652368966442566
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -110,43 +192,43 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3940961801712095679}
-  - component: {fileID: 8105490652001144570}
+  - component: {fileID: 8283689288983612880}
+  - component: {fileID: 5799064230173989014}
   m_Layer: 12
-  m_Name: AttackSound1
+  m_Name: AttackSound2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3940961801712095679
+--- !u!4 &8283689288983612880
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6347843765855616301}
+  m_GameObject: {fileID: 3806652368966442566}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3127193822731794600}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!82 &8105490652001144570
+--- !u!82 &5799064230173989014
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6347843765855616301}
+  m_GameObject: {fileID: 3806652368966442566}
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 8ce034d9ad0f8a044826fa7bf693f6ed, type: 3}
+  m_audioClip: {fileID: 8300000, guid: ff9ab81fa604a1f4cbb64878d192a5b7, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.1
-  m_Pitch: 1
+  m_Volume: 0.25
+  m_Pitch: 0.3
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -229,7 +311,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!1 &6877636649825925968
+--- !u!1 &7760009933614383015
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -237,80 +319,125 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5292374778678244673}
-  - component: {fileID: 6977707514028844338}
+  - component: {fileID: 5959056131977045161}
+  - component: {fileID: 2627777739862934912}
   m_Layer: 12
-  m_Name: Emote
+  m_Name: AttackSound1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5292374778678244673
+--- !u!4 &5959056131977045161
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6877636649825925968}
+  m_GameObject: {fileID: 7760009933614383015}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.025, y: 0.7, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3127193822731794600}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &6977707514028844338
-SpriteRenderer:
+--- !u!82 &2627777739862934912
+AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6877636649825925968}
+  m_GameObject: {fileID: 7760009933614383015}
   m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1874014279
-  m_SortingLayer: 4
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b2314d51ee408d747a5f5adfe28cb42a, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: ff9ab81fa604a1f4cbb64878d192a5b7, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.15
+  m_Pitch: 0.7
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &8541368627796761624
 GameObject:
   m_ObjectHideFlags: 0
@@ -324,7 +451,7 @@ GameObject:
   - component: {fileID: 2433613247966766290}
   - component: {fileID: -147672441811953531}
   m_Layer: 12
-  m_Name: Enemy 2
+  m_Name: Enemy 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -342,8 +469,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1420545309692566664}
-  - {fileID: 5292374778678244673}
-  - {fileID: 3940961801712095679}
+  - {fileID: 4469450101177464526}
+  - {fileID: 5959056131977045161}
+  - {fileID: 8283689288983612880}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -359,9 +487,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 2
-  m_AngularDrag: 2
+  m_Mass: 50
+  m_LinearDrag: 20
+  m_AngularDrag: 20
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
@@ -382,7 +510,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.2}
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 2, y: 1.75}
   m_Direction: 0
 --- !u!114 &-147672441811953531
 MonoBehaviour:
@@ -396,27 +524,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c7049c7f0973c748adefb40b3c91efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackObj: {fileID: 2668265684378721589, guid: 64a2916cd8702ea4db209e629685bd5f, type: 3}
-  attackObj2: {fileID: 0}
-  destroyPrefab: {fileID: 9153816938522868100, guid: ba8bbe724ebbd734db0791367589aee2, type: 3}
+  attackObj: {fileID: 2668265684378721589, guid: 653ad080acd8e1d4f80b93b505f12160, type: 3}
+  attackObj2: {fileID: 2668265684378721589, guid: ed58881c2a44ac247bfa3d07ff4a02da, type: 3}
+  destroyPrefab: {fileID: 7460950131217249041, guid: ea42cdb86970a844b95e6ff38bdcb7cb, type: 3}
   animator: {fileID: 708761527090953176}
   emotes:
   - {fileID: 21300000, guid: 488ab4da09ce68f40aa5255dbb7c1272, type: 3}
   - {fileID: 21300000, guid: b2314d51ee408d747a5f5adfe28cb42a, type: 3}
   - {fileID: 21300000, guid: 5e5f0386c869070418d4c1fbb6e948cf, type: 3}
   - {fileID: 21300000, guid: ab6963a5995ef6c46ae44a8a19a68e23, type: 3}
-  attackSource: {fileID: 8105490652001144570}
-  attackSource2: {fileID: 0}
-  hurtColor: {r: 1, g: 0, b: 0, a: 1}
-  bossAttackIndex: -1
-  moveSpeed: 12
-  searchRadius: 3
-  attackRadius: 0.5
-  randomMoveDelay: 0.25
+  attackSource: {fileID: 2627777739862934912}
+  attackSource2: {fileID: 5799064230173989014}
+  hurtColor: {r: 1, g: 0.91517913, b: 0, a: 1}
+  bossAttackIndex: 0
+  moveSpeed: 3200
+  searchRadius: 8
+  attackRadius: 1.5
+  randomMoveDelay: 1.5
   sleepTime: 1
-  attackTimer: 1
-  damage: 8
-  attackLifetime: 0.1
+  attackTimer: 2
+  damage: 35
+  attackLifetime: 1
   originalSpeed: 0
-  maxHealth: 40
-  hurtTime: 4
+  maxHealth: 5000
+  hurtTime: 0.75
