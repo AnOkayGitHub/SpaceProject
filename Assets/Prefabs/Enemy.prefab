@@ -399,6 +399,7 @@ MonoBehaviour:
   attackObj: {fileID: 2668265684378721589, guid: 653ad080acd8e1d4f80b93b505f12160, type: 3}
   attackObj2: {fileID: 0}
   destroyPrefab: {fileID: 467692352510755484, guid: 9f946f5a100bf5b419e3ab2ac66a421c, type: 3}
+  fireWorkPrefab: {fileID: 2948210288240437441, guid: a1cc48d3605a2a24eaf5527485af5118, type: 3}
   animator: {fileID: 6021625382622029538}
   emotes:
   - {fileID: 21300000, guid: 488ab4da09ce68f40aa5255dbb7c1272, type: 3}
@@ -408,6 +409,9 @@ MonoBehaviour:
   attackSource: {fileID: 7749965848410551318}
   attackSource2: {fileID: 0}
   hurtColor: {r: 1, g: 0, b: 0, a: 1}
+  fireworkColors:
+  - {r: 0, g: 1, b: 1, a: 1}
+  - {r: 0.2028302, g: 1, b: 0.6708334, a: 1}
   bossAttackIndex: -1
   moveSpeed: 20
   searchRadius: 4.5

@@ -96,6 +96,11 @@ public class Projectile : MonoBehaviour
                         p.UpdateHealth();
                     }
                 }
+
+                if (collision.gameObject.layer == LayerMask.NameToLayer("NPC"))
+                {
+                    DestroySelf();
+                }
             } 
             else 
             {

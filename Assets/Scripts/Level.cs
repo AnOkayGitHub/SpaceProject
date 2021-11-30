@@ -14,6 +14,7 @@ public class Level : MonoBehaviour
     [SerializeField] private Animator introAnimator;
     [SerializeField] private UpdateUI uiUpdater;
     [SerializeField] private Light2D globalLight;
+    [SerializeField] private AudioSource mainSong;
     [SerializeField] private int roomSize = 7;
     [SerializeField] private int gridSize = 10;
     [SerializeField] private int bossLevel = 5;
@@ -31,11 +32,21 @@ public class Level : MonoBehaviour
     private List<GameObject> rooms;
     private int roomsSpawned = 5;
     private int itemRooms;
+    private bool startedMusic = false;
 
     private void Start()
     {
         UpdateWorldData();
         Initialize();
+    }
+
+    private void Update()
+    {
+        if(World.readyToPlay && !startedMusic)
+        {
+            startedMusic = true;
+            mainSong.Play();
+        }
     }
 
     public Dictionary<Vector2, bool> GetGrid()
@@ -179,7 +190,6 @@ public class Level : MonoBehaviour
     {
         for (int i = roomsSpawned; i < maxRooms; i++)
         {
-            
             UpdateAvailableNeighbors();
 
             Vector2 newRoomPos = totalOpenNeighbors[Random.Range(0, totalOpenNeighbors.Count)];

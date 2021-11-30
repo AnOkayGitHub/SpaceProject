@@ -6,11 +6,13 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject attackObj;
     [SerializeField] private GameObject attackObj2;
     [SerializeField] private GameObject destroyPrefab;
+    [SerializeField] private GameObject fireWorkPrefab;
     [SerializeField] private Animator animator;
     [SerializeField] private Sprite[] emotes;
     [SerializeField] private AudioSource attackSource;
     [SerializeField] private AudioSource attackSource2;
     [SerializeField] private Color hurtColor;
+    [SerializeField] private Color[] fireworkColors;
     [SerializeField] private int bossAttackIndex = -1;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float searchRadius;
@@ -25,6 +27,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float hurtTime;
 
     private EnemyState currentState;
+    private PlayerController pc;
     private Vector2 target;
     private SpriteRenderer emote;
     private Rigidbody2D rb;
@@ -32,12 +35,17 @@ public class Enemy : MonoBehaviour
     private int moveX = 0;
     private int moveY = 0;
     private float currentHealth;
+    private float celebrateTime = 1f;
+    private float fireworkCount = 0;
+    private float maxFireworkCount = 9;
     private bool hasDestroyed = false;
     private bool canRandomMove = true;
     private bool canAttack = true;
     private bool isBoss = false;
     private bool setName = false;
     private bool canChangeColor = true;
+    private bool celebrated = false;
+    private bool canLaunch = true;
 
     private enum EnemyState
     {
@@ -54,6 +62,7 @@ public class Enemy : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         gfx = transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
         emote = transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>();
+        pc = World.player.GetComponent<PlayerController>();
 
         originalSpeed = moveSpeed;
         
@@ -83,8 +92,9 @@ public class Enemy : MonoBehaviour
         if (currentState != EnemyState.Init)
         {
             HealthCheck();
+            CelebrateCheck();
 
-            if (currentState != EnemyState.Destroy)
+            if (currentState != EnemyState.Destroy && currentState != EnemyState.Celebrate)
             {
                 HandleMovement();
                 CheckVision();
@@ -106,6 +116,9 @@ public class Enemy : MonoBehaviour
                     break;
                 case EnemyState.Destroy:
                     DestroySelf();
+                    break;
+                case EnemyState.Celebrate:
+                    Celebrate();
                     break;
             }
         }
@@ -350,6 +363,35 @@ public class Enemy : MonoBehaviour
         animator.SetFloat("Y", moveY);
     }
 
+    private void Celebrate()
+    {
+        if(!celebrated)
+        {
+            celebrated = true;
+            emote.gameObject.SetActive(false);
+            target = transform.position;
+        }
+
+        if(fireworkCount < maxFireworkCount && canLaunch)
+        {
+            canLaunch = false;
+            GameObject fw = (GameObject)Instantiate(fireWorkPrefab);
+            fw.transform.position = transform.position;
+            ParticleSystem.MainModule fwPS = fw.transform.GetChild(0).GetChild(1).GetComponent<ParticleSystem>().main;
+            fwPS.startColor = fireworkColors[Random.Range(0, fireworkColors.Length)];
+            fireworkCount += 1;
+            StartCoroutine("WaitForFirework");
+            
+        }
+        
+    }
+
+    private IEnumerator WaitForFirework()
+    {
+        yield return new WaitForSeconds(Random.Range(celebrateTime - 0.5f, celebrateTime + 0.5f));
+        canLaunch = true;
+    }
+
     private void DestroySelf()
     {
         if (!hasDestroyed)
@@ -385,6 +427,14 @@ public class Enemy : MonoBehaviour
         if(currentHealth <= 0)
         {
             currentState = EnemyState.Destroy;
+        }
+    }
+
+    private void CelebrateCheck()
+    {
+        if(pc.GetCurrentHealth() <= 0)
+        {
+            currentState = EnemyState.Celebrate;
         }
     }
 

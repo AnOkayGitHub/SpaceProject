@@ -1522,15 +1522,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 2668265684378721589, guid: 523645c43b7898641901a8986cfb002c, type: 3}
+  emoteObj: {fileID: 0}
   animator: {fileID: 6906786217059300872}
+  flashlightAnimator: {fileID: 0}
+  scannerAnimator: {fileID: 0}
   projSource: {fileID: 1413946921}
   footstepSource: {fileID: 618957665}
   doorPassSource: {fileID: 2061286309}
   itemPickupSource: {fileID: 650001780}
   hurtAudioSource: {fileID: 1008734212}
+  buyAudioSource: {fileID: 0}
+  interactAudioSource: {fileID: 0}
+  ladderClimbSource: {fileID: 0}
   projSpawn: {fileID: 8186384304230288753}
   uiUpdater: {fileID: 0}
   gfx: {fileID: 6906786217059300873}
+  emoteRenderer: {fileID: 0}
+  emotes: []
   volumeProfile: {fileID: 11400000, guid: c01d9bf3e7cab334e812975c4f7db6fc, type: 2}
   hurtColor: {r: 1, g: 0, b: 0, a: 1}
   boosterColor: {r: 0.10984874, g: 1, b: 0, a: 1}
@@ -1546,6 +1554,7 @@ MonoBehaviour:
   invincibleModeTime: 0.25
   maxHealth: 100
   damage: 60
+  emoteTimer: 2
 --- !u!58 &1393828404
 CircleCollider2D:
   m_ObjectHideFlags: 0

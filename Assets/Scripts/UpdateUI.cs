@@ -17,6 +17,7 @@ public class UpdateUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI bossName;
     [SerializeField] private GameObject bossHUD;
     [SerializeField] private GameObject shopHUD;
+    [SerializeField] private Animator gameOverHUD;
 
     private void Start()
     {
@@ -44,6 +45,11 @@ public class UpdateUI : MonoBehaviour
         {
             World.bossHP = bossHPText;
         }
+    }
+
+    public void GameOver()
+    {
+        gameOverHUD.Play("HUDGameover", -1, 0f);
     }
 
     public void UpdateHealthbar(float current, float max)

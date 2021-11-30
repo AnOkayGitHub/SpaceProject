@@ -9,7 +9,11 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private GameObject emoteObj;
+    [SerializeField] private GameObject light1Obj;
+    [SerializeField] private GameObject light2Obj;
     [SerializeField] private Animator animator;
+    [SerializeField] private Animator flashlightAnimator;
+    [SerializeField] private Animator scannerAnimator;
     [SerializeField] private AudioSource projSource;
     [SerializeField] private AudioSource footstepSource;
     [SerializeField] private AudioSource doorPassSource;
@@ -60,8 +64,10 @@ public class PlayerController : MonoBehaviour
     private bool canClick = true;
     private bool canStep = true;
     private bool canChangeColor = true;
+    private bool lightOn = false;
     private bool[] hasItem = new bool[] { false, false, false, false, false, false, false };
     private bool isBusy = false;
+    private bool lost = false;
     
     private void Start()
     {
@@ -69,6 +75,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
         uiUpdater.UpdateCoins();
+        flashlightAnimator.speed = 0;
 
         if (World.player == null)
         {
@@ -87,12 +94,17 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        UpdateItemEffects();
         UpdateEmote();
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
         if (World.readyToPlay)
         {
+            if(!lightOn)
+            {
+                lightOn = true;
+                flashlightAnimator.speed = 1;
+            }
+
             GetInput();
             DetectDoors();
             DetectTransition();
@@ -210,8 +222,9 @@ public class PlayerController : MonoBehaviour
                 case "Armor":
                     hasItem[6] = true;
                     uiUpdater.GetPlayerHealthbar().color = armorColor;
-                    maxHealth = 200;
+                    maxHealth += 100;
                     currentHealth = maxHealth;
+                    UpdateHealth();
                     break;
             }
         }
@@ -534,6 +547,17 @@ public class PlayerController : MonoBehaviour
         if(currentHealth > maxHealth)
         {
             currentHealth = maxHealth;
+        }
+        else if(currentHealth <= 0)
+        {
+            currentHealth = 0;
+            lost = true;
+            isBusy = true;
+            light1Obj.gameObject.SetActive(false);
+            light2Obj.gameObject.SetActive(false);
+            uiUpdater.GameOver();
+            animator.Play("PlayerDefeat", -1, 0f);
+            
         }
 
         uiUpdater.UpdateHealthbar(currentHealth, maxHealth);

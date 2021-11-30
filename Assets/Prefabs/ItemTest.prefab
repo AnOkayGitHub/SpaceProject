@@ -196,8 +196,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprites:
-  - {fileID: 8903855049071503771, guid: 97ea0c6780ad9d44da2826c7af230dd9, type: 3}
+  - {fileID: -1823535908205110754, guid: a4781befa97cafb4b98a24a535d9e376, type: 3}
   names:
-  - Alien Tech
+  - Armor
   descs:
   - Debug Version
